@@ -47,8 +47,13 @@ CI_THRESHOLD_PERCENT = 0.85
 # 來回組合設定
 # ============================================
 
-# 自動組合「去程＋回程」時，回程需在去程之後、且間隔不超過這個天數
+# 自動組合「去程＋回程」時，回程需在去程之後、間隔至少 MIN_TRIP_DAYS 天、
+# 且不超過 MAX_TRIP_DAYS 天
+MIN_TRIP_DAYS = 2
 MAX_TRIP_DAYS = 30
+
+# 儀表板網址（附在每則通知結尾）
+DASHBOARD_URL = "https://02pokemonplus-ux.github.io/flight-bot/"
 
 # 歷史資料保留天數（供儀表板趨勢圖使用）
 HISTORY_KEEP_DAYS = 90

@@ -144,7 +144,7 @@ def best_combo(outbound, inbound):
         for d2, p2 in inbound:
             dt2 = date.fromisoformat(d2)
             gap = (dt2 - dt1).days
-            if gap < 1 or gap > config.MAX_TRIP_DAYS:
+            if gap < config.MIN_TRIP_DAYS or gap > config.MAX_TRIP_DAYS:
                 continue
             total = p1 + p2
             if best is None or total < best["total"]:
@@ -258,11 +258,14 @@ def main():
             lines.append("")
 
         if combos:
-            lines.append(f"▼ 最便宜來回組合（{config.MAX_TRIP_DAYS} 天內）")
+            lines.append(f"▼ 最便宜來回組合（{config.MIN_TRIP_DAYS}–{config.MAX_TRIP_DAYS} 天）")
             for c in sorted(combos, key=lambda x: x["total"]):
                 lines.append(f"{c['tw']}↔{c['jp']}：去 {c['out_date']} {c['out_price']:.0f}"
                              f" + 回 {c['in_date']} {c['in_price']:.0f}"
                              f" ＝ {c['total']:.0f}（{c['days']} 天）")
+            lines.append("")
+
+        lines.append(f"📊 完整資料與趨勢：{config.DASHBOARD_URL}")
 
         notify("\n".join(lines))
     else:

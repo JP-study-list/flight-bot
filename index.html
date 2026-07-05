@@ -4,155 +4,186 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>機票低價儀表板</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 <style>
-  :root{
-    --ink:#101014;
-    --panel:#17171d;
-    --panel-2:#1d1d25;
-    --line:#2a2a33;
-    --cream:#EDEAE2;
-    --dim:#8f8b80;
-    --gold:#B08A3E;
-    --gold-bright:#d4a94e;
-    --mono:'IBM Plex Mono',monospace;
+  :root {
+    --bg: #f5f5f3; --surface: #fff; --border: #e0e0e0;
+    --text: #1a1a1a; --text2: #666; --text3: #999;
+    --accent: #1e4b8f; --accent-soft: rgba(30,75,143,.08);
+    --grid-line: #ececea;
+    --mono: 'IBM Plex Mono', monospace;
   }
-  *{box-sizing:border-box;margin:0;padding:0}
-  html{scroll-behavior:smooth}
-  @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
-  body{
-    background:var(--ink);color:var(--cream);
-    font-family:'Noto Sans TC',sans-serif;font-size:15px;line-height:1.6;
-    padding-bottom:80px;
+  body.dark {
+    --bg: #111110; --surface: #1c1c1a; --border: #2e2e2b;
+    --text: #f0ede8; --text2: #a8a69e; --text3: #777;
+    --accent: #6fa3e8; --accent-soft: rgba(111,163,232,.12);
+    --grid-line: #26262a;
   }
-  a{color:var(--gold-bright)}
-  .wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  @media (prefers-reduced-motion: reduce){ * { transition: none !important; animation: none !important; } }
+  body {
+    font-family: 'Noto Sans TC', sans-serif;
+    background: var(--bg); color: var(--text);
+    min-height: 100vh; padding: 36px 20px 70px;
+    font-size: 15px; line-height: 1.6;
+    transition: background .2s, color .2s;
+  }
+  a { color: var(--accent); }
+  .container { max-width: 1080px; margin: 0 auto; }
 
-  /* ---- 頂部看板 ---- */
-  header{
-    border-bottom:1px solid var(--line);
-    background:linear-gradient(180deg,#14141a 0%,var(--ink) 100%);
-    padding:34px 0 26px;
+  /* ---- 頁首：標題左上、工具列右上 ---- */
+  header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 26px; gap: 16px; }
+  header h1 { font-weight: 700; font-size: clamp(24px, 5vw, 34px); letter-spacing: .02em; }
+  header h1 .accent { color: var(--accent); }
+  .subtitle { margin-top: 6px; color: var(--text2); font-size: 13px; }
+  .updated { margin-top: 4px; font-family: var(--mono); font-size: 12px; color: var(--text3); }
+  .toolbar { display: flex; gap: 8px; flex-shrink: 0; }
+  .tool-btn {
+    width: 36px; height: 36px; border-radius: 50%;
+    border: 1px solid var(--border); background: var(--surface);
+    color: var(--text2); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: border-color .15s, color .15s;
   }
-  .board-label{
-    font-family:var(--mono);font-size:12px;letter-spacing:.35em;
-    color:var(--gold);text-transform:uppercase;margin-bottom:10px;
+  .tool-btn:hover { border-color: var(--accent); color: var(--text); }
+  .tool-btn:focus-visible, select:focus-visible, input:focus-visible, button:focus-visible {
+    outline: 2px solid var(--accent); outline-offset: 1px;
   }
-  h1{font-weight:900;font-size:clamp(26px,4.5vw,38px);letter-spacing:.02em;line-height:1.25}
-  h1 .gold{color:var(--gold)}
-  .updated{
-    margin-top:12px;font-family:var(--mono);font-size:13px;color:var(--dim);
-    display:flex;align-items:center;gap:8px;
-  }
-  .updated .dot{width:8px;height:8px;border-radius:50%;background:var(--gold);flex:none}
 
   /* ---- 篩選列 ---- */
-  .filters{
-    display:grid;grid-template-columns:repeat(4,1fr) auto;gap:12px;
-    background:var(--panel);border:1px solid var(--line);border-radius:14px;
-    padding:16px;margin:22px 0 30px;
+  .filters {
+    display: grid; grid-template-columns: repeat(4, 1fr) auto; gap: 12px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+    padding: 16px; margin-bottom: 32px;
   }
-  .filters label{display:block;font-size:12px;color:var(--dim);margin-bottom:5px;letter-spacing:.05em}
-  .filters select,.filters input{
-    width:100%;background:var(--panel-2);border:1px solid var(--line);
-    color:var(--cream);border-radius:9px;padding:9px 10px;font-size:14px;
-    font-family:'Noto Sans TC',sans-serif;
+  .filters label { display: block; font-size: 12px; color: var(--text2); margin-bottom: 5px; }
+  .filters select, .filters input {
+    width: 100%; background: var(--bg); border: 1px solid var(--border);
+    color: var(--text); border-radius: 9px; padding: 9px 10px; font-size: 14px;
+    font-family: 'Noto Sans TC', sans-serif;
   }
-  .filters input[type=date]{font-family:var(--mono);font-size:13px}
-  .filters select:focus,.filters input:focus,button:focus-visible{
-    outline:2px solid var(--gold);outline-offset:1px;border-color:var(--gold);
+  .filters input[type=date] { font-family: var(--mono); font-size: 13px; }
+  .filters .reset { align-self: end; }
+  .reset button {
+    background: none; border: 1px solid var(--border); color: var(--text2);
+    border-radius: 9px; padding: 9px 16px; font-size: 13px; cursor: pointer;
+    font-family: 'Noto Sans TC', sans-serif; white-space: nowrap;
   }
-  .filters .reset{align-self:end}
-  .reset button{
-    background:none;border:1px solid var(--line);color:var(--dim);
-    border-radius:9px;padding:9px 16px;font-size:13px;cursor:pointer;
-    font-family:'Noto Sans TC',sans-serif;white-space:nowrap;
-  }
-  .reset button:hover{border-color:var(--gold);color:var(--gold-bright)}
+  .reset button:hover { border-color: var(--accent); color: var(--accent); }
 
   /* ---- 區塊 ---- */
-  section{margin-bottom:44px}
-  .sec-head{display:flex;align-items:center;gap:10px;margin-bottom:16px}
-  .sec-head svg{flex:none}
-  h2{font-weight:900;font-size:19px;letter-spacing:.03em}
-  .sec-note{font-size:12.5px;color:var(--dim);margin-left:auto;text-align:right}
+  section { margin-bottom: 44px; }
+  .sec-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 14px; }
+  .sec-num { font-family: var(--mono); font-size: 12px; font-weight: 600; color: var(--accent); letter-spacing: .06em; }
+  h2 { font-weight: 700; font-size: 18px; letter-spacing: .02em; }
+  .sec-note { font-size: 12px; color: var(--text3); margin-left: auto; text-align: right; }
 
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(215px, 1fr)); gap: 12px; }
 
-  .card{
-    background:var(--panel);border:1px solid var(--line);border-radius:14px;
-    padding:16px 18px;transition:border-color .15s;
+  .card {
+    display: block; text-decoration: none; color: var(--text);
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 14px; padding: 16px 18px; position: relative;
+    transition: transform .15s, border-color .15s;
   }
-  .card.clickable{cursor:pointer}
-  .card.clickable:hover,.card.selected{border-color:var(--gold)}
-  .route{
-    font-family:var(--mono);font-size:16px;font-weight:600;
-    display:flex;align-items:center;gap:8px;
+  a.card:hover { transform: translateY(-2px); border-color: var(--accent); }
+  .route { font-family: var(--mono); font-size: 15.5px; font-weight: 600; display: flex; align-items: center; gap: 7px; }
+  .route .arrow { color: var(--accent); font-weight: 400; }
+  .route-zh { font-size: 12px; color: var(--text2); margin-top: 2px; }
+  .price {
+    font-family: var(--mono); font-size: 25px; font-weight: 600;
+    color: var(--accent); margin-top: 9px; font-variant-numeric: tabular-nums;
   }
-  .route .arrow{color:var(--gold);font-weight:400}
-  .route-zh{font-size:12px;color:var(--dim);margin-top:2px}
-  .price{
-    font-family:var(--mono);font-size:26px;font-weight:600;
-    color:var(--gold-bright);margin-top:10px;font-variant-numeric:tabular-nums;
-  }
-  .price small{font-size:13px;color:var(--dim);font-weight:400;margin-left:4px}
-  .meta{font-size:12.5px;color:var(--dim);margin-top:4px}
-  .meta b{color:var(--cream);font-weight:500}
+  .price small { font-size: 12px; color: var(--text3); font-weight: 400; margin-left: 4px; }
+  .meta { font-size: 12px; color: var(--text2); margin-top: 6px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 
-  /* 華航專區 */
-  .ci-card{border-color:rgba(176,138,62,.55);background:linear-gradient(160deg,#1c1912 0%,var(--panel) 55%)}
-  .badge{
-    display:inline-block;font-size:11px;letter-spacing:.15em;
-    border:1px solid var(--gold);color:var(--gold-bright);
-    border-radius:99px;padding:1px 9px;margin-bottom:8px;font-family:var(--mono);
+  /* 航空公司彩色標籤 */
+  .chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 11.5px; border-radius: 99px; padding: 1px 9px 1px 6px;
+    background: var(--accent-soft); color: var(--text);
   }
+  .chip i { width: 8px; height: 8px; border-radius: 50%; display: inline-block; flex: none; }
+
+  /* 華航專區卡 */
+  .ci-card { border-left: 3px solid #d02c3a; }
+  .badge {
+    display: inline-block; font-size: 10.5px; letter-spacing: .12em;
+    color: #d02c3a; font-family: var(--mono); font-weight: 600; margin-bottom: 6px;
+  }
+  body.dark .ci-card { border-left-color: #ff5f6e; }
+  body.dark .badge { color: #ff8a95; }
 
   /* 組合卡 */
-  .combo-card .leg{
-    display:flex;justify-content:space-between;align-items:baseline;
-    font-family:var(--mono);font-size:13.5px;margin-top:8px;color:var(--cream);
+  .combo-card .leg {
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: var(--mono); font-size: 13px; margin-top: 8px; gap: 8px;
   }
-  .combo-card .leg .d{color:var(--dim)}
-  .combo-total{
-    border-top:1px dashed var(--line);margin-top:12px;padding-top:10px;
-    display:flex;justify-content:space-between;align-items:baseline;
+  .combo-card .leg a { text-decoration: none; color: var(--accent); font-weight: 600; }
+  .combo-card .leg a:hover { text-decoration: underline; }
+  .combo-card .leg .d { color: var(--text2); }
+  .combo-total {
+    border-top: 1px dashed var(--border); margin-top: 12px; padding-top: 10px;
+    display: flex; justify-content: space-between; align-items: baseline;
   }
-  .combo-total .sum{font-family:var(--mono);font-size:22px;font-weight:600;color:var(--gold-bright)}
-  .combo-total .days{font-size:12px;color:var(--dim)}
+  .combo-total .sum { font-family: var(--mono); font-size: 21px; font-weight: 600; color: var(--accent); }
+  .combo-total .days { font-size: 12px; color: var(--text3); }
+
+  /* 總覽卡右上角的趨勢小按鈕 */
+  .trend-btn {
+    position: absolute; top: 12px; right: 12px;
+    width: 28px; height: 28px; border-radius: 8px;
+    border: 1px solid var(--border); background: var(--surface); color: var(--text3);
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+  }
+  .trend-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .card.selected { border-color: var(--accent); }
+  .card.selected .trend-btn { border-color: var(--accent); color: var(--accent); }
 
   /* 趨勢圖 */
-  .chart-panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px}
-  .chart-panel .hint{font-size:12.5px;color:var(--dim);margin-bottom:12px}
-  .chart-box{position:relative;height:320px}
-  @media(max-width:640px){.chart-box{height:240px}}
+  .chart-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 18px; }
+  .chart-panel .hint { font-size: 12px; color: var(--text3); margin-bottom: 12px; }
+  .chart-box { position: relative; height: 320px; }
+  @media (max-width: 640px) { .chart-box { height: 240px; } }
 
-  .empty{
-    color:var(--dim);font-size:14px;background:var(--panel);
-    border:1px dashed var(--line);border-radius:14px;padding:26px;text-align:center;
+  .empty {
+    color: var(--text2); font-size: 14px; background: var(--surface);
+    border: 1px dashed var(--border); border-radius: 14px; padding: 26px; text-align: center;
+    grid-column: 1 / -1;
   }
-  #loading{padding:60px 0;text-align:center;color:var(--dim);font-family:var(--mono)}
+  #loading { padding: 60px 0; text-align: center; color: var(--text3); font-family: var(--mono); }
 
-  @media(max-width:820px){.filters{grid-template-columns:1fr 1fr}}
-  @media(max-width:640px){
-    .filters{grid-template-columns:1fr 1fr}
-    .grid{grid-template-columns:1fr 1fr}
-  }
-  @media(max-width:460px){.grid{grid-template-columns:1fr}}
+  footer { text-align: center; margin-top: 44px; font-size: 12px; color: var(--text3); }
+
+  @media (max-width: 820px) { .filters { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 460px) { .grid { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
+<div class="container">
 
-<header>
-  <div class="wrap">
-    <div class="board-label">FARE WATCH — TW ⇄ JP</div>
-    <h1>機票低價<span class="gold">儀表板</span></h1>
-    <div class="updated"><span class="dot"></span><span id="updated-at">載入中</span></div>
-  </div>
-</header>
+  <header>
+    <div>
+      <h1>機票低價<span class="accent">儀表板</span></h1>
+      <div class="subtitle">台灣 ⇄ 日本單程票價監控・點卡片直接前往查票購票</div>
+      <div class="updated" id="updated-at">載入中</div>
+    </div>
+    <div class="toolbar">
+      <button class="tool-btn" id="theme-btn" type="button" title="切換深色模式" aria-label="切換深色模式">
+        <svg id="icon-moon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+        <svg id="icon-sun" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+          <circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/>
+          <line x1="4.22" y1="4.22" x2="6.34" y2="6.34"/><line x1="17.66" y1="17.66" x2="19.78" y2="19.78"/>
+          <line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/>
+          <line x1="4.22" y1="19.78" x2="6.34" y2="17.66"/><line x1="17.66" y1="6.34" x2="19.78" y2="4.22"/>
+        </svg>
+      </button>
+    </div>
+  </header>
 
-<div class="wrap">
   <div id="loading">正在讀取價格資料…</div>
 
   <div id="app" hidden>
@@ -177,37 +208,33 @@
       <div class="reset"><button id="f-reset" type="button">清除篩選</button></div>
     </div>
 
-    <section id="sec-ci">
+    <section>
       <div class="sec-head">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#B08A3E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.9 6.26L21 9.27l-4.8 4.28L17.4 20 12 16.7 6.6 20l1.2-6.45L3 9.27l6.1-1.01z"/></svg>
-        <h2>華航專區</h2>
-        <span class="sec-note">各航線華航最低價（依目前篩選）</span>
+        <span class="sec-num">01</span><h2>華航專區</h2>
+        <span class="sec-note">各航線華航最低價・點卡片查票</span>
       </div>
       <div class="grid" id="ci-grid"></div>
     </section>
 
-    <section id="sec-combo">
+    <section>
       <div class="sec-head">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#B08A3E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 014-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
-        <h2>最便宜來回組合</h2>
-        <span class="sec-note">去回間隔 30 天內</span>
+        <span class="sec-num">02</span><h2>最便宜來回組合</h2>
+        <span class="sec-note">2–30 天行程・去回可分開點選查票</span>
       </div>
       <div class="grid" id="combo-grid"></div>
     </section>
 
-    <section id="sec-routes">
+    <section>
       <div class="sec-head">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#B08A3E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></svg>
-        <h2>單程最低價總覽</h2>
-        <span class="sec-note">點卡片看趨勢</span>
+        <span class="sec-num">03</span><h2>單程最低價總覽</h2>
+        <span class="sec-note">點卡片查票・右上小圖示看趨勢</span>
       </div>
       <div class="grid" id="route-grid"></div>
     </section>
 
-    <section id="sec-trend">
+    <section>
       <div class="sec-head">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#B08A3E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-        <h2>價格趨勢</h2>
+        <span class="sec-num">04</span><h2>價格趨勢</h2>
         <span class="sec-note" id="trend-route-label"></span>
       </div>
       <div class="chart-panel">
@@ -217,6 +244,8 @@
     </section>
 
   </div>
+
+  <footer>每天台灣時間 09:00 自動更新</footer>
 </div>
 
 <script>
@@ -224,14 +253,56 @@ const AIRPORT_ZH = {
   TPE:'桃園', RMQ:'台中', TSA:'松山',
   NRT:'東京成田', HND:'東京羽田', KIX:'大阪關西', FUK:'福岡', SDJ:'仙台'
 };
-const MAX_TRIP_DAYS = 30;
+const MIN_TRIP_DAYS = 2, MAX_TRIP_DAYS = 30;
+
+/* 航空公司品牌色（比對不到的用灰藍） */
+const AIRLINE_COLORS = [
+  ['China Airlines', '#d02c3a'], ['華航', '#d02c3a'],
+  ['EVA', '#00784b'],
+  ['Peach', '#e8368f'],
+  ['Scoot', '#f5c400'],
+  ['Jetstar', '#ff5000'],
+  ['Jin Air', '#8bc53f'],
+  ['Tigerair', '#f6851f'],
+  ['STARLUX', '#8b734b'], ['Starlux', '#8b734b'],
+  ['ANA', '#1c2f6b'],
+  ['JAL', '#9d1f2e'], ['Japan Airlines', '#9d1f2e'],
+  ['Cathay', '#00645a'],
+  ['Batik', '#f2a900'],
+];
+function airlineColor(name){
+  for (const [k, c] of AIRLINE_COLORS) if (name.includes(k)) return c;
+  return '#7a8ca6';
+}
+const chipHTML = name =>
+  `<span class="chip"><i style="background:${airlineColor(name)}"></i>${name}</span>`;
+
 const fmt = n => Math.round(n).toLocaleString('en-US');
 const zh = c => AIRPORT_ZH[c] || c;
 
-let DATA = null;
-let selectedTrendRoute = null;
-let chart = null;
+/* Google Flights 查票連結（帶入航線與日期，可直接前往購票） */
+function bookURL(o, d, dateStr){
+  const q = `flights from ${o} to ${d} on ${dateStr} one way`;
+  return 'https://www.google.com/travel/flights?q=' + encodeURIComponent(q) + '&curr=TWD';
+}
 
+let DATA = null, selectedTrendRoute = null, chart = null;
+
+/* ---- 晝夜模式 ---- */
+function applyTheme(dark){
+  document.body.classList.toggle('dark', dark);
+  document.getElementById('icon-moon').style.display = dark ? 'none' : '';
+  document.getElementById('icon-sun').style.display = dark ? '' : 'none';
+  try { localStorage.setItem('fare-dash-dark', dark ? '1' : '0'); } catch(e){}
+  if (DATA) renderTrend(); // 重繪圖表以套用主題色
+}
+document.getElementById('theme-btn').addEventListener('click',
+  () => applyTheme(!document.body.classList.contains('dark')));
+try {
+  if (localStorage.getItem('fare-dash-dark') === '1') applyTheme(true);
+} catch(e){}
+
+/* ---- 初始化 ---- */
 async function init(){
   try{
     const resp = await fetch('data/price_history.json', {cache:'no-store'});
@@ -239,7 +310,7 @@ async function init(){
     DATA = await resp.json();
   }catch(e){
     document.getElementById('loading').textContent =
-      '讀不到價格資料。機器人可能還沒完成第一次掃描，明天再來看看。';
+      '讀不到價格資料。機器人可能還沒完成第一次掃描，稍後再試。';
     return;
   }
   document.getElementById('loading').hidden = true;
@@ -261,7 +332,6 @@ function buildFilters(){
   const dSel = document.getElementById('f-dest');
   for(const c of origins) oSel.add(new Option(`${c} ${zh(c)}`, c));
   for(const c of dests)   dSel.add(new Option(`${c} ${zh(c)}`, c));
-
   for(const id of ['f-origin','f-dest','f-from','f-to'])
     document.getElementById(id).addEventListener('change', render);
   document.getElementById('f-reset').addEventListener('click', ()=>{
@@ -290,9 +360,8 @@ function render(){
   renderTrend();
 }
 
-/* ---- 華航專區 ---- */
+/* ---- 01 華航專區 ---- */
 function renderCI(rows){
-  const grid = document.getElementById('ci-grid');
   const byRoute = new Map();
   for(const r of rows){
     if(r.ci == null) continue;
@@ -300,18 +369,18 @@ function renderCI(rows){
     if(!byRoute.has(k) || r.ci < byRoute.get(k).ci) byRoute.set(k, r);
   }
   const list = [...byRoute.values()].sort((a,b)=>a.ci-b.ci);
-  grid.innerHTML = list.length ? list.map(r=>`
-    <div class="card ci-card">
+  document.getElementById('ci-grid').innerHTML = list.length ? list.map(r=>`
+    <a class="card ci-card" href="${bookURL(r.o, r.d, r.date)}" target="_blank" rel="noopener">
       <span class="badge">CHINA AIRLINES</span>
       <div class="route">${r.o}<span class="arrow">→</span>${r.d}</div>
       <div class="route-zh">${zh(r.o)} → ${zh(r.d)}</div>
       <div class="price">${fmt(r.ci)}<small>TWD 起</small></div>
-      <div class="meta">最便宜日期 <b>${r.date}</b></div>
-    </div>`).join('')
-    : '<div class="empty" style="grid-column:1/-1">目前篩選範圍內沒有華航報價</div>';
+      <div class="meta">最便宜日期 ${r.date}</div>
+    </a>`).join('')
+    : '<div class="empty">目前篩選範圍內沒有華航報價</div>';
 }
 
-/* ---- 來回組合（依篩選的日期範圍計算） ---- */
+/* ---- 02 來回組合 ---- */
 function renderCombos(){
   const from = document.getElementById('f-from').value;
   const to = document.getElementById('f-to').value;
@@ -345,7 +414,7 @@ function renderCombos(){
     for(const a of out){
       for(const b of back){
         const gap = (new Date(b.date) - new Date(a.date)) / 86400000;
-        if(gap < 1 || gap > MAX_TRIP_DAYS) continue;
+        if(gap < MIN_TRIP_DAYS || gap > MAX_TRIP_DAYS) continue;
         const total = a.price + b.price;
         if(!best || total < best.total) best = {tw, jp, out:a, back:b, total, days:gap};
       }
@@ -354,22 +423,27 @@ function renderCombos(){
   }
   combos.sort((a,b)=>a.total-b.total);
 
-  const grid = document.getElementById('combo-grid');
-  grid.innerHTML = combos.length ? combos.map(c=>`
+  document.getElementById('combo-grid').innerHTML = combos.length ? combos.map(c=>`
     <div class="card combo-card">
       <div class="route">${c.tw}<span class="arrow">⇄</span>${c.jp}</div>
       <div class="route-zh">${zh(c.tw)} ⇄ ${zh(c.jp)}</div>
-      <div class="leg"><span>去 ${c.out.date}</span><span>${fmt(c.out.price)}<span class="d"> ${c.out.airline}</span></span></div>
-      <div class="leg"><span>回 ${c.back.date}</span><span>${fmt(c.back.price)}<span class="d"> ${c.back.airline}</span></span></div>
+      <div class="leg">
+        <a href="${bookURL(c.tw, c.jp, c.out.date)}" target="_blank" rel="noopener">去 ${c.out.date}</a>
+        <span>${fmt(c.out.price)} <span class="d">${c.out.airline}</span></span>
+      </div>
+      <div class="leg">
+        <a href="${bookURL(c.jp, c.tw, c.back.date)}" target="_blank" rel="noopener">回 ${c.back.date}</a>
+        <span>${fmt(c.back.price)} <span class="d">${c.back.airline}</span></span>
+      </div>
       <div class="combo-total">
         <span class="days">${c.days} 天行程</span>
         <span class="sum">${fmt(c.total)}</span>
       </div>
     </div>`).join('')
-    : '<div class="empty" style="grid-column:1/-1">目前篩選範圍內組不出符合條件的來回行程</div>';
+    : '<div class="empty">目前篩選範圍內組不出 2–30 天的來回行程</div>';
 }
 
-/* ---- 單程總覽 ---- */
+/* ---- 03 單程總覽 ---- */
 function renderRoutes(rows){
   const byRoute = new Map();
   for(const r of rows){
@@ -381,24 +455,32 @@ function renderRoutes(rows){
   grid.innerHTML = list.length ? list.map(r=>{
     const k = r.o + '-' + r.d;
     return `
-    <div class="card clickable ${k===selectedTrendRoute?'selected':''}" data-route="${k}" tabindex="0" role="button" aria-label="查看 ${r.o} 到 ${r.d} 趨勢">
+    <a class="card ${k===selectedTrendRoute?'selected':''}" href="${bookURL(r.o, r.d, r.date)}" target="_blank" rel="noopener">
+      <button class="trend-btn" type="button" data-route="${k}" title="查看趨勢" aria-label="查看 ${r.o} 到 ${r.d} 的價格趨勢">
+        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      </button>
       <div class="route">${r.o}<span class="arrow">→</span>${r.d}</div>
       <div class="route-zh">${zh(r.o)} → ${zh(r.d)}</div>
       <div class="price">${fmt(r.price)}<small>TWD 起</small></div>
-      <div class="meta"><b>${r.airline}</b> · ${r.date}</div>
-    </div>`;
+      <div class="meta">${chipHTML(r.airline)} ${r.date}</div>
+    </a>`;
   }).join('')
-  : '<div class="empty" style="grid-column:1/-1">目前篩選範圍內沒有航班資料</div>';
+  : '<div class="empty">目前篩選範圍內沒有航班資料</div>';
 
-  grid.querySelectorAll('.clickable').forEach(el=>{
-    const go = ()=>{ selectedTrendRoute = el.dataset.route; render();
-      document.getElementById('sec-trend').scrollIntoView({behavior:'smooth'}); };
-    el.addEventListener('click', go);
-    el.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault();go();} });
+  grid.querySelectorAll('.trend-btn').forEach(btn=>{
+    btn.addEventListener('click', e=>{
+      e.preventDefault(); e.stopPropagation();  // 不觸發卡片的購票連結
+      selectedTrendRoute = btn.dataset.route;
+      render();
+      document.querySelector('.chart-panel').scrollIntoView({behavior:'smooth'});
+    });
   });
 }
 
-/* ---- 趨勢圖 ---- */
+/* ---- 04 趨勢圖 ---- */
+function cssVar(name){
+  return getComputedStyle(document.body).getPropertyValue(name).trim();
+}
 function renderTrend(){
   const hist = DATA.history || {};
   const keys = Object.keys(hist);
@@ -417,31 +499,32 @@ function renderTrend(){
   const [o,d] = selectedTrendRoute.split('-');
   label.textContent = `${o} → ${d}（${zh(o)} → ${zh(d)}）`;
 
-  const labels = series.map(e=>e.c);
-  const minData = series.map(e=>e.min);
-  const ciData = series.map(e=>e.ci);
+  const accent = cssVar('--accent');
+  const dim = cssVar('--text3');
+  const gridLine = cssVar('--grid-line');
+  const textCol = cssVar('--text');
 
   if(chart) chart.destroy();
   chart = new Chart(ctx, {
     type:'line',
-    data:{ labels, datasets:[
-      { label:'全航班最低價', data:minData, borderColor:'#d4a94e',
-        backgroundColor:'rgba(212,169,78,.12)', fill:true, tension:.3,
-        pointRadius:3, pointBackgroundColor:'#d4a94e' },
-      { label:'華航最低價', data:ciData, borderColor:'#8f8b80',
+    data:{ labels: series.map(e=>e.c), datasets:[
+      { label:'全航班最低價', data: series.map(e=>e.min), borderColor: accent,
+        backgroundColor:'transparent', fill:false, tension:.3,
+        pointRadius:3, pointBackgroundColor: accent },
+      { label:'華航最低價', data: series.map(e=>e.ci), borderColor:'#d02c3a',
         borderDash:[6,4], fill:false, tension:.3,
-        pointRadius:3, pointBackgroundColor:'#8f8b80', spanGaps:true }
+        pointRadius:3, pointBackgroundColor:'#d02c3a', spanGaps:true }
     ]},
     options:{
       responsive:true, maintainAspectRatio:false,
       interaction:{mode:'index', intersect:false},
       plugins:{
-        legend:{labels:{color:'#EDEAE2', font:{family:"'Noto Sans TC'"}}},
+        legend:{labels:{color:textCol, font:{family:"'Noto Sans TC'"}}},
         tooltip:{callbacks:{label:c=>` ${c.dataset.label}：${c.parsed.y==null?'—':fmt(c.parsed.y)+' TWD'}`}}
       },
       scales:{
-        x:{ticks:{color:'#8f8b80', font:{family:"'IBM Plex Mono'", size:11}}, grid:{color:'#22222a'}},
-        y:{ticks:{color:'#8f8b80', font:{family:"'IBM Plex Mono'", size:11}, callback:v=>fmt(v)}, grid:{color:'#22222a'}}
+        x:{ticks:{color:dim, font:{family:"'IBM Plex Mono'", size:11}}, grid:{color:gridLine}},
+        y:{ticks:{color:dim, font:{family:"'IBM Plex Mono'", size:11}, callback:v=>fmt(v)}, grid:{color:gridLine}}
       }
     }
   });
