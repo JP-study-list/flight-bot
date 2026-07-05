@@ -4,15 +4,14 @@
 當價格明顯便宜時透過 LINE 推播提醒；若查到華航的價格，一律優先顯示在通知最上面。
 """
 import json
-import os
 import statistics
 from datetime import date, timedelta
 from pathlib import Path
 
-import requests
-from fast_flights import FlightData, Passengers, get_flights
+from fast_flights import FlightQuery, Passengers, create_query, get_flights
 
 import config
+from notifiers import notify
 
 HISTORY_FILE = Path(__file__).parent.parent / "data" / "price_history.json"
 
@@ -45,19 +44,19 @@ def generate_date_pairs():
 
 def search_round_trip(origin, destination, depart_date, return_date):
     try:
-        result = get_flights(
-            flight_data=[
-                FlightData(date=depart_date, from_airport=origin, to_airport=destination),
-                FlightData(date=return_date, from_airport=destination, to_airport=origin),
+        query = create_query(
+            flights=[
+                FlightQuery(date=depart_date, from_airport=origin, to_airport=destination),
+                FlightQuery(date=return_date, from_airport=destination, to_airport=origin),
             ],
             trip="round-trip",
             seat="economy",
-            passengers=Passengers(adults=1, children=0, infants_in_seat=0, infants_on_lap=0),
-            fetch_mode="fallback",
+            passengers=Passengers(adults=1),
+            currency="TWD",   # 價格直接用新台幣回傳
         )
-        return result
+        return get_flights(query)
     except Exception as e:
-        print(f"[warn] 查詢失敗 {destination} {depart_date}->{return_date}: {e}")
+        print(f"[warn] 查詢失敗 {origin}->{destination} {depart_date}->{return_date}: {e}")
         return None
 
 
@@ -105,28 +104,6 @@ def evaluate(history, key, cheapest_price, ci_price):
                 ci_reason = f"比華航歷史均價 {avg_ci:.0f} 便宜超過 {(1 - config.CI_THRESHOLD_PERCENT) * 100:.0f}%"
 
     return overall_reason, ci_reason
-
-
-def send_line_message(text):
-    """用 LINE 官方帳號的 broadcast API 推播（不需要知道自己的 User ID）"""
-    token = os.environ.get("LINE_CHANNEL_ACCESS_TOKEN")
-    if not token:
-        print("[warn] 未設定 LINE_CHANNEL_ACCESS_TOKEN，跳過推播，以下是原本要發送的內容：")
-        print(text)
-        return
-    resp = requests.post(
-        "https://api.line.me/v2/bot/message/broadcast",
-        headers={
-            "Content-Type": "application/json",
-            "Authorization": f"Bearer {token}",
-        },
-        json={"messages": [{"type": "text", "text": text}]},
-        timeout=15,
-    )
-    if resp.status_code != 200:
-        print(f"[error] LINE 推播失敗: {resp.status_code} {resp.text}")
-    else:
-        print("[info] LINE 推播成功")
 
 
 def main():
@@ -201,7 +178,7 @@ def main():
 
             lines.append("")  # 空行分隔
 
-        send_line_message("\n".join(lines))
+        notify("\n".join(lines))
     else:
         print("[info] 今天沒有找到符合條件的低價")
 
