@@ -2,8 +2,8 @@ name: Flight Price Monitor
 
 on:
   schedule:
-    - cron: "0 1 * * *"  # 每天 UTC 01:00 = 台灣時間 09:00
-  workflow_dispatch: {}   # 允許在 GitHub 網頁上手動點擊執行，方便測試
+    - cron: "0 1 * * *"
+  workflow_dispatch: {}
 
 permissions:
   contents: write
@@ -24,6 +24,7 @@ jobs:
       - name: Run price monitor
         env:
           LINE_CHANNEL_ACCESS_TOKEN: ${{ secrets.LINE_CHANNEL_ACCESS_TOKEN }}
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
         run: python src/monitor.py
 
       - name: Commit updated price history
