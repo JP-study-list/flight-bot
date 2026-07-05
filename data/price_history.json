@@ -1,1 +1,1442 @@
-{}
+{
+  "TPE_NRT_2026-07-10_2026-07-14": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 12497.0,
+      "cheapest_airline": "Tigerair Taiwan",
+      "ci_price": 17326.0
+    }
+  ],
+  "TPE_NRT_2026-07-17_2026-07-21": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 13605.0,
+      "cheapest_airline": "Scoot",
+      "ci_price": 13999.0
+    }
+  ],
+  "TPE_NRT_2026-07-24_2026-07-28": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 13297.0,
+      "cheapest_airline": "Tigerair Taiwan",
+      "ci_price": 16522.0
+    }
+  ],
+  "TPE_NRT_2026-07-31_2026-08-04": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 13520.0,
+      "cheapest_airline": "Peach Aviation",
+      "ci_price": 14404.0
+    }
+  ],
+  "TPE_NRT_2026-08-07_2026-08-11": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 12130.0,
+      "cheapest_airline": "Peach Aviation",
+      "ci_price": 13999.0
+    }
+  ],
+  "TPE_NRT_2026-08-14_2026-08-18": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 10657.0,
+      "cheapest_airline": "Jin Air",
+      "ci_price": 12523.0
+    }
+  ],
+  "TPE_NRT_2026-08-21_2026-08-25": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 11930.0,
+      "cheapest_airline": "Peach Aviation",
+      "ci_price": 13999.0
+    }
+  ],
+  "TPE_NRT_2026-08-28_2026-09-01": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 10930.0,
+      "cheapest_airline": "Peach Aviation",
+      "ci_price": 13999.0
+    }
+  ],
+  "TPE_NRT_2026-09-04_2026-09-08": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 11695.0,
+      "cheapest_airline": "Jetstar",
+      "ci_price": 13999.0
+    }
+  ],
+  "TPE_NRT_2026-09-11_2026-09-15": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 9427.0,
+      "cheapest_airline": "Scoot",
+      "ci_price": 12523.0
+    }
+  ],
+  "TPE_NRT_2026-09-18_2026-09-22": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 8850.0,
+      "cheapest_airline": "Scoot",
+      "ci_price": 11946.0
+    }
+  ],
+  "TPE_NRT_2026-09-25_2026-09-29": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 14295.0,
+      "cheapest_airline": "Hong Kong Express",
+      "ci_price": 23770.0
+    }
+  ],
+  "TPE_NRT_2026-10-02_2026-10-06": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 10693.0,
+      "cheapest_airline": "Scoot",
+      "ci_price": 13999.0
+    }
+  ],
+  "TPE_NRT_2026-10-09_2026-10-13": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 12608.0,
+      "cheapest_airline": "Tigerair Taiwan",
+      "ci_price": 16982.0
+    }
+  ],
+  "TPE_NRT_2026-10-16_2026-10-20": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 11671.0,
+      "cheapest_airline": "Jetstar",
+      "ci_price": 13999.0
+    }
+  ],
+  "TPE_NRT_2026-10-23_2026-10-27": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 15013.0,
+      "cheapest_airline": "Tigerair Taiwan",
+      "ci_price": 18412.0
+    }
+  ],
+  "TPE_HND_2026-07-10_2026-07-14": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 12755.0,
+      "cheapest_airline": "Hong Kong Express",
+      "ci_price": 23791.0
+    }
+  ],
+  "TPE_HND_2026-07-17_2026-07-21": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 17759.0,
+      "cheapest_airline": "Hong Kong Express",
+      "ci_price": 23967.0
+    }
+  ],
+  "TPE_HND_2026-07-24_2026-07-28": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 17071.0,
+      "cheapest_airline": "Hong Kong Express",
+      "ci_price": 30146.0
+    }
+  ],
+  "TPE_HND_2026-07-31_2026-08-04": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 16546.0,
+      "cheapest_airline": "Hong Kong Express",
+      "ci_price": 26085.0
+    }
+  ],
+  "TPE_HND_2026-08-07_2026-08-11": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 15930.0,
+      "cheapest_airline": "Asiana Airlines",
+      "ci_price": 22454.0
+    }
+  ],
+  "TPE_HND_2026-08-14_2026-08-18": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 16034.0,
+      "cheapest_airline": "Hong Kong Express",
+      "ci_price": 26738.0
+    }
+  ],
+  "TPE_HND_2026-08-21_2026-08-25": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 10733.0,
+      "cheapest_airline": "Hong Kong Express",
+      "ci_price": 25360.0
+    }
+  ],
+  "TPE_HND_2026-08-28_2026-09-01": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 9749.0,
+      "cheapest_airline": "Hong Kong Express",
+      "ci_price": 22717.0
+    }
+  ],
+  "TPE_HND_2026-09-04_2026-09-08": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 10477.0,
+      "cheapest_airline": "Hong Kong Express",
+      "ci_price": 21719.0
+    }
+  ],
+  "TPE_HND_2026-09-11_2026-09-15": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 11791.0,
+      "cheapest_airline": "Hong Kong Express",
+      "ci_price": 23225.0
+    }
+  ],
+  "TPE_HND_2026-09-18_2026-09-22": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 9442.0,
+      "cheapest_airline": "Hong Kong Express",
+      "ci_price": 23103.0
+    }
+  ],
+  "TPE_HND_2026-09-25_2026-09-29": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 14925.0,
+      "cheapest_airline": "Hong Kong Express",
+      "ci_price": 26022.0
+    }
+  ],
+  "TPE_HND_2026-10-02_2026-10-06": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 16118.0,
+      "cheapest_airline": "Hong Kong Express",
+      "ci_price": 24180.0
+    }
+  ],
+  "TPE_HND_2026-10-09_2026-10-13": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 13381.0,
+      "cheapest_airline": "Hong Kong Express",
+      "ci_price": 24488.0
+    }
+  ],
+  "TPE_HND_2026-10-16_2026-10-20": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 17339.0,
+      "cheapest_airline": "Asiana Airlines",
+      "ci_price": 23536.0
+    }
+  ],
+  "TPE_HND_2026-10-23_2026-10-27": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 16512.0,
+      "cheapest_airline": "Hong Kong Express",
+      "ci_price": 28143.0
+    }
+  ],
+  "TPE_KIX_2026-07-10_2026-07-14": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 10405.0,
+      "cheapest_airline": "T'Way Air",
+      "ci_price": 18091.0
+    }
+  ],
+  "TPE_KIX_2026-07-17_2026-07-21": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 11897.0,
+      "cheapest_airline": "Jetstar",
+      "ci_price": 15572.0
+    }
+  ],
+  "TPE_KIX_2026-07-24_2026-07-28": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 10987.0,
+      "cheapest_airline": "Jetstar",
+      "ci_price": 16069.0
+    }
+  ],
+  "TPE_KIX_2026-07-31_2026-08-04": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 10627.0,
+      "cheapest_airline": "Jetstar",
+      "ci_price": 14602.0
+    }
+  ],
+  "TPE_KIX_2026-08-07_2026-08-11": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 10171.0,
+      "cheapest_airline": "Jetstar",
+      "ci_price": 14087.0
+    }
+  ],
+  "TPE_KIX_2026-08-14_2026-08-18": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 10072.0,
+      "cheapest_airline": "T'Way Air",
+      "ci_price": 13138.0
+    }
+  ],
+  "TPE_KIX_2026-08-21_2026-08-25": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 10407.0,
+      "cheapest_airline": "Jetstar",
+      "ci_price": 16447.0
+    }
+  ],
+  "TPE_KIX_2026-08-28_2026-09-01": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 9378.0,
+      "cheapest_airline": "Jetstar",
+      "ci_price": 12514.0
+    }
+  ],
+  "TPE_KIX_2026-09-04_2026-09-08": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 8420.0,
+      "cheapest_airline": "Jetstar",
+      "ci_price": 11976.0
+    }
+  ],
+  "TPE_KIX_2026-09-11_2026-09-15": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 9048.0,
+      "cheapest_airline": "Peach Aviation",
+      "ci_price": 12227.0
+    }
+  ],
+  "TPE_KIX_2026-09-18_2026-09-22": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 9751.0,
+      "cheapest_airline": "Tigerair Taiwan",
+      "ci_price": 11791.0
+    }
+  ],
+  "TPE_KIX_2026-09-25_2026-09-29": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 17428.0,
+      "cheapest_airline": "Asiana Airlines",
+      "ci_price": 27342.0
+    }
+  ],
+  "TPE_KIX_2026-10-02_2026-10-06": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 8809.0,
+      "cheapest_airline": "Peach Aviation",
+      "ci_price": 12715.0
+    }
+  ],
+  "TPE_KIX_2026-10-09_2026-10-13": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 12409.0,
+      "cheapest_airline": "Peach Aviation",
+      "ci_price": 15178.0
+    }
+  ],
+  "TPE_KIX_2026-10-16_2026-10-20": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 9611.0,
+      "cheapest_airline": "Peach Aviation",
+      "ci_price": 12317.0
+    }
+  ],
+  "TPE_KIX_2026-10-23_2026-10-27": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 12961.0,
+      "cheapest_airline": "Peach Aviation",
+      "ci_price": 20548.0
+    }
+  ],
+  "TPE_FUK_2026-07-10_2026-07-14": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 11475.0,
+      "cheapest_airline": "Tigerair Taiwan",
+      "ci_price": 17393.0
+    }
+  ],
+  "TPE_FUK_2026-07-17_2026-07-21": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 12616.0,
+      "cheapest_airline": "T'Way Air",
+      "ci_price": 15809.0
+    }
+  ],
+  "TPE_FUK_2026-07-24_2026-07-28": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 12521.0,
+      "cheapest_airline": "Jin Air",
+      "ci_price": 22375.0
+    }
+  ],
+  "TPE_FUK_2026-07-31_2026-08-04": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 12521.0,
+      "cheapest_airline": "Jin Air",
+      "ci_price": 15809.0
+    }
+  ],
+  "TPE_FUK_2026-08-07_2026-08-11": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 11543.0,
+      "cheapest_airline": "Jin Air",
+      "ci_price": 18158.0
+    }
+  ],
+  "TPE_FUK_2026-08-14_2026-08-18": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 10975.0,
+      "cheapest_airline": "Tigerair Taiwan",
+      "ci_price": 16397.0
+    }
+  ],
+  "TPE_FUK_2026-08-21_2026-08-25": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 11327.0,
+      "cheapest_airline": "Hong Kong Express",
+      "ci_price": 21793.0
+    }
+  ],
+  "TPE_FUK_2026-08-28_2026-09-01": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 10359.0,
+      "cheapest_airline": "Jeju Air",
+      "ci_price": 14522.0
+    }
+  ],
+  "TPE_FUK_2026-09-04_2026-09-08": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 11327.0,
+      "cheapest_airline": "Hong Kong Express",
+      "ci_price": 18563.0
+    }
+  ],
+  "TPE_FUK_2026-09-11_2026-09-15": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 9987.0,
+      "cheapest_airline": "T'Way Air",
+      "ci_price": 18759.0
+    }
+  ],
+  "TPE_FUK_2026-09-18_2026-09-22": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 11296.0,
+      "cheapest_airline": "Jin Air",
+      "ci_price": 14522.0
+    }
+  ],
+  "TPE_FUK_2026-09-25_2026-09-29": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 15892.0,
+      "cheapest_airline": "Hong Kong Express",
+      "ci_price": 32086.0
+    }
+  ],
+  "TPE_FUK_2026-10-02_2026-10-06": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 14131.0,
+      "cheapest_airline": "Jin Air",
+      "ci_price": 15170.0
+    }
+  ],
+  "TPE_FUK_2026-10-09_2026-10-13": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 12837.0,
+      "cheapest_airline": "Hong Kong Express",
+      "ci_price": 18806.0
+    }
+  ],
+  "TPE_FUK_2026-10-16_2026-10-20": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 10309.0,
+      "cheapest_airline": "T'Way Air",
+      "ci_price": 19211.0
+    }
+  ],
+  "TPE_FUK_2026-10-23_2026-10-27": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 13918.0,
+      "cheapest_airline": "Cebu Pacific",
+      "ci_price": 22375.0
+    }
+  ],
+  "TPE_SDJ_2026-07-10_2026-07-14": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 30324.0,
+      "cheapest_airline": "Cathay Pacific / Hong Kong Express",
+      "ci_price": 59068.0
+    }
+  ],
+  "TPE_SDJ_2026-07-17_2026-07-21": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 19941.0,
+      "cheapest_airline": "EVA Air",
+      "ci_price": null
+    }
+  ],
+  "TPE_SDJ_2026-07-24_2026-07-28": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 34134.0,
+      "cheapest_airline": "Cathay Pacific / Hong Kong Express",
+      "ci_price": 59068.0
+    }
+  ],
+  "TPE_SDJ_2026-07-31_2026-08-04": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 23299.0,
+      "cheapest_airline": "Cathay Pacific / ANA",
+      "ci_price": null
+    }
+  ],
+  "TPE_SDJ_2026-08-07_2026-08-11": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 34134.0,
+      "cheapest_airline": "Cathay Pacific / Hong Kong Express",
+      "ci_price": 40791.0
+    }
+  ],
+  "TPE_SDJ_2026-08-14_2026-08-18": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 34134.0,
+      "cheapest_airline": "Cathay Pacific / Hong Kong Express",
+      "ci_price": null
+    }
+  ],
+  "TPE_SDJ_2026-08-21_2026-08-25": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 31490.0,
+      "cheapest_airline": "Cathay Pacific / Hong Kong Express",
+      "ci_price": 59068.0
+    }
+  ],
+  "TPE_SDJ_2026-08-28_2026-09-01": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 26730.0,
+      "cheapest_airline": "Cathay Pacific / Hong Kong Express",
+      "ci_price": 40291.0
+    }
+  ],
+  "TPE_SDJ_2026-09-04_2026-09-08": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 26080.0,
+      "cheapest_airline": "Cathay Pacific / Hong Kong Express",
+      "ci_price": 66451.0
+    }
+  ],
+  "TPE_SDJ_2026-09-11_2026-09-15": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 26730.0,
+      "cheapest_airline": "Cathay Pacific / Hong Kong Express",
+      "ci_price": 66451.0
+    }
+  ],
+  "TPE_SDJ_2026-09-18_2026-09-22": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 15512.0,
+      "cheapest_airline": "STARLUX Airlines",
+      "ci_price": null
+    }
+  ],
+  "TPE_SDJ_2026-09-25_2026-09-29": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 25408.0,
+      "cheapest_airline": "Cathay Pacific / Hong Kong Express",
+      "ci_price": null
+    }
+  ],
+  "TPE_SDJ_2026-10-02_2026-10-06": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 34134.0,
+      "cheapest_airline": "Cathay Pacific / Hong Kong Express",
+      "ci_price": 59068.0
+    }
+  ],
+  "TPE_SDJ_2026-10-09_2026-10-13": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 28074.0,
+      "cheapest_airline": "Cathay Pacific / Hong Kong Express",
+      "ci_price": 59068.0
+    }
+  ],
+  "TPE_SDJ_2026-10-16_2026-10-20": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 25098.0,
+      "cheapest_airline": "STARLUX Airlines / JAL",
+      "ci_price": 58951.0
+    }
+  ],
+  "TPE_SDJ_2026-10-23_2026-10-27": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 25571.0,
+      "cheapest_airline": "Cathay Pacific / Hong Kong Express",
+      "ci_price": null
+    }
+  ],
+  "TPE_CTS_2026-07-10_2026-07-14": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 14737.0,
+      "cheapest_airline": "Jin Air",
+      "ci_price": null
+    }
+  ],
+  "TPE_CTS_2026-07-17_2026-07-21": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 16420.0,
+      "cheapest_airline": "Greater Bay Airlines",
+      "ci_price": null
+    }
+  ],
+  "TPE_CTS_2026-07-24_2026-07-28": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 15370.0,
+      "cheapest_airline": "Jetstar",
+      "ci_price": null
+    }
+  ],
+  "TPE_CTS_2026-07-31_2026-08-04": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 15860.0,
+      "cheapest_airline": "Jetstar",
+      "ci_price": null
+    }
+  ],
+  "TPE_CTS_2026-08-07_2026-08-11": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 18397.0,
+      "cheapest_airline": "Jin Air",
+      "ci_price": null
+    }
+  ],
+  "TPE_CTS_2026-08-14_2026-08-18": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 11609.0,
+      "cheapest_airline": "Jin Air",
+      "ci_price": 29333.0
+    }
+  ],
+  "TPE_CTS_2026-08-21_2026-08-25": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 14325.0,
+      "cheapest_airline": "Jin Air",
+      "ci_price": 37578.0
+    }
+  ],
+  "TPE_CTS_2026-08-28_2026-09-01": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 12160.0,
+      "cheapest_airline": "Jin Air",
+      "ci_price": 27754.0
+    }
+  ],
+  "TPE_CTS_2026-09-04_2026-09-08": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 13317.0,
+      "cheapest_airline": "Jetstar",
+      "ci_price": 29816.0
+    }
+  ],
+  "TPE_CTS_2026-09-11_2026-09-15": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 12930.0,
+      "cheapest_airline": "Jetstar",
+      "ci_price": 22455.0
+    }
+  ],
+  "TPE_CTS_2026-09-18_2026-09-22": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 13017.0,
+      "cheapest_airline": "Jin Air",
+      "ci_price": 29633.0
+    }
+  ],
+  "TPE_CTS_2026-09-25_2026-09-29": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 16867.0,
+      "cheapest_airline": "Jetstar",
+      "ci_price": null
+    }
+  ],
+  "TPE_CTS_2026-10-02_2026-10-06": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 14590.0,
+      "cheapest_airline": "Jetstar",
+      "ci_price": 27754.0
+    }
+  ],
+  "TPE_CTS_2026-10-09_2026-10-13": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 18402.0,
+      "cheapest_airline": "Asiana Airlines",
+      "ci_price": 36696.0
+    }
+  ],
+  "TPE_CTS_2026-10-16_2026-10-20": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 15598.0,
+      "cheapest_airline": "Jetstar",
+      "ci_price": 29816.0
+    }
+  ],
+  "TPE_CTS_2026-10-23_2026-10-27": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 16461.0,
+      "cheapest_airline": "Asiana Airlines",
+      "ci_price": null
+    }
+  ],
+  "RMQ_NRT_2026-07-10_2026-07-14": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 12496.0,
+      "cheapest_airline": "Jin Air",
+      "ci_price": null
+    }
+  ],
+  "RMQ_NRT_2026-07-17_2026-07-21": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 14796.0,
+      "cheapest_airline": "Hong Kong Express",
+      "ci_price": null
+    }
+  ],
+  "RMQ_NRT_2026-07-24_2026-07-28": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 12312.0,
+      "cheapest_airline": "Jin Air",
+      "ci_price": null
+    }
+  ],
+  "RMQ_NRT_2026-07-31_2026-08-04": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 11773.0,
+      "cheapest_airline": "Jin Air",
+      "ci_price": null
+    }
+  ],
+  "RMQ_NRT_2026-08-07_2026-08-11": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 10251.0,
+      "cheapest_airline": "Jin Air",
+      "ci_price": null
+    }
+  ],
+  "RMQ_NRT_2026-08-14_2026-08-18": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 12907.0,
+      "cheapest_airline": "Jin Air",
+      "ci_price": null
+    }
+  ],
+  "RMQ_NRT_2026-08-21_2026-08-25": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 13212.0,
+      "cheapest_airline": "Jin Air",
+      "ci_price": null
+    }
+  ],
+  "RMQ_NRT_2026-08-28_2026-09-01": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 11612.0,
+      "cheapest_airline": "Jin Air",
+      "ci_price": null
+    }
+  ],
+  "RMQ_NRT_2026-09-04_2026-09-08": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 11970.0,
+      "cheapest_airline": "Hong Kong Express",
+      "ci_price": null
+    }
+  ],
+  "RMQ_NRT_2026-09-11_2026-09-15": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 12978.0,
+      "cheapest_airline": "T'Way Air",
+      "ci_price": null
+    }
+  ],
+  "RMQ_NRT_2026-09-18_2026-09-22": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 11970.0,
+      "cheapest_airline": "Hong Kong Express",
+      "ci_price": null
+    }
+  ],
+  "RMQ_NRT_2026-09-25_2026-09-29": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 17311.0,
+      "cheapest_airline": "Hong Kong Express",
+      "ci_price": null
+    }
+  ],
+  "RMQ_NRT_2026-10-02_2026-10-06": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 17951.0,
+      "cheapest_airline": "Hong Kong Express",
+      "ci_price": null
+    }
+  ],
+  "RMQ_NRT_2026-10-09_2026-10-13": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 17003.0,
+      "cheapest_airline": "Jin Air",
+      "ci_price": null
+    }
+  ],
+  "RMQ_NRT_2026-10-16_2026-10-20": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 14796.0,
+      "cheapest_airline": "Hong Kong Express",
+      "ci_price": null
+    }
+  ],
+  "RMQ_NRT_2026-10-23_2026-10-27": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 14935.0,
+      "cheapest_airline": "Hong Kong Express",
+      "ci_price": null
+    }
+  ],
+  "RMQ_HND_2026-07-10_2026-07-14": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 26306.0,
+      "cheapest_airline": "Hong Kong Express / Cathay Pacific",
+      "ci_price": null
+    }
+  ],
+  "RMQ_HND_2026-07-17_2026-07-21": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 26874.0,
+      "cheapest_airline": "Hong Kong Express / Cathay Pacific",
+      "ci_price": null
+    }
+  ],
+  "RMQ_HND_2026-07-24_2026-07-28": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 41318.0,
+      "cheapest_airline": "China Airlines / JAL",
+      "ci_price": 41318.0
+    }
+  ],
+  "RMQ_HND_2026-07-31_2026-08-04": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 26306.0,
+      "cheapest_airline": "Hong Kong Express / Cathay Pacific",
+      "ci_price": null
+    }
+  ],
+  "RMQ_HND_2026-08-07_2026-08-11": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 23556.0,
+      "cheapest_airline": "Hong Kong Express / Cathay Pacific",
+      "ci_price": 55160.0
+    }
+  ],
+  "RMQ_HND_2026-08-14_2026-08-18": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 45468.0,
+      "cheapest_airline": "China Airlines / JAL",
+      "ci_price": 45468.0
+    }
+  ],
+  "RMQ_HND_2026-08-21_2026-08-25": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 24524.0,
+      "cheapest_airline": "Hong Kong Express / Cathay Pacific",
+      "ci_price": 36389.0
+    }
+  ],
+  "RMQ_HND_2026-08-28_2026-09-01": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 23474.0,
+      "cheapest_airline": "Hong Kong Express / Cathay Pacific",
+      "ci_price": 30768.0
+    }
+  ],
+  "RMQ_HND_2026-09-04_2026-09-08": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 11841.0,
+      "cheapest_airline": "Hong Kong Express",
+      "ci_price": 21819.0
+    }
+  ],
+  "RMQ_HND_2026-09-11_2026-09-15": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 11841.0,
+      "cheapest_airline": "Hong Kong Express",
+      "ci_price": 21819.0
+    }
+  ],
+  "RMQ_HND_2026-09-18_2026-09-22": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 11841.0,
+      "cheapest_airline": "Hong Kong Express",
+      "ci_price": 24168.0
+    }
+  ],
+  "RMQ_HND_2026-09-25_2026-09-29": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 17736.0,
+      "cheapest_airline": "Hong Kong Express",
+      "ci_price": 32339.0
+    }
+  ],
+  "RMQ_HND_2026-10-02_2026-10-06": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 16896.0,
+      "cheapest_airline": "Hong Kong Express",
+      "ci_price": 31789.0
+    }
+  ],
+  "RMQ_HND_2026-10-09_2026-10-13": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 13826.0,
+      "cheapest_airline": "Hong Kong Express",
+      "ci_price": 31118.0
+    }
+  ],
+  "RMQ_HND_2026-10-16_2026-10-20": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 14402.0,
+      "cheapest_airline": "Hong Kong Express",
+      "ci_price": 25218.0
+    }
+  ],
+  "RMQ_HND_2026-10-23_2026-10-27": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 18095.0,
+      "cheapest_airline": "Hong Kong Express",
+      "ci_price": null
+    }
+  ],
+  "RMQ_KIX_2026-07-10_2026-07-14": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 10741.0,
+      "cheapest_airline": "Jin Air",
+      "ci_price": null
+    }
+  ],
+  "RMQ_KIX_2026-07-17_2026-07-21": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 12523.0,
+      "cheapest_airline": "T'Way Air",
+      "ci_price": null
+    }
+  ],
+  "RMQ_KIX_2026-07-24_2026-07-28": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 10352.0,
+      "cheapest_airline": "Jin Air",
+      "ci_price": null
+    }
+  ],
+  "RMQ_KIX_2026-07-31_2026-08-04": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 10428.0,
+      "cheapest_airline": "Jin Air",
+      "ci_price": null
+    }
+  ],
+  "RMQ_KIX_2026-08-07_2026-08-11": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 8701.0,
+      "cheapest_airline": "Jin Air",
+      "ci_price": null
+    }
+  ],
+  "RMQ_KIX_2026-08-14_2026-08-18": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 10434.0,
+      "cheapest_airline": "Jin Air",
+      "ci_price": null
+    }
+  ],
+  "RMQ_KIX_2026-08-21_2026-08-25": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 10841.0,
+      "cheapest_airline": "Jin Air",
+      "ci_price": null
+    }
+  ],
+  "RMQ_KIX_2026-08-28_2026-09-01": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 9241.0,
+      "cheapest_airline": "Jin Air",
+      "ci_price": null
+    }
+  ],
+  "RMQ_KIX_2026-09-04_2026-09-08": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 10151.0,
+      "cheapest_airline": "Jin Air",
+      "ci_price": null
+    }
+  ],
+  "RMQ_KIX_2026-09-11_2026-09-15": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 11988.0,
+      "cheapest_airline": "Hong Kong Express",
+      "ci_price": null
+    }
+  ],
+  "RMQ_KIX_2026-09-18_2026-09-22": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 11988.0,
+      "cheapest_airline": "Hong Kong Express",
+      "ci_price": null
+    }
+  ],
+  "RMQ_KIX_2026-09-25_2026-09-29": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 18719.0,
+      "cheapest_airline": "Hong Kong Express",
+      "ci_price": null
+    }
+  ],
+  "RMQ_KIX_2026-10-02_2026-10-06": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 15738.0,
+      "cheapest_airline": "Jin Air",
+      "ci_price": null
+    }
+  ],
+  "RMQ_KIX_2026-10-09_2026-10-13": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 13893.0,
+      "cheapest_airline": "Hong Kong Express",
+      "ci_price": null
+    }
+  ],
+  "RMQ_KIX_2026-10-16_2026-10-20": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 13676.0,
+      "cheapest_airline": "Jin Air",
+      "ci_price": null
+    }
+  ],
+  "RMQ_KIX_2026-10-23_2026-10-27": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 14953.0,
+      "cheapest_airline": "Hong Kong Express",
+      "ci_price": null
+    }
+  ],
+  "RMQ_FUK_2026-07-10_2026-07-14": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 11180.0,
+      "cheapest_airline": "Jin Air",
+      "ci_price": null
+    }
+  ],
+  "RMQ_FUK_2026-07-17_2026-07-21": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 9585.0,
+      "cheapest_airline": "Jin Air",
+      "ci_price": null
+    }
+  ],
+  "RMQ_FUK_2026-07-24_2026-07-28": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 11817.0,
+      "cheapest_airline": "Jin Air",
+      "ci_price": null
+    }
+  ],
+  "RMQ_FUK_2026-07-31_2026-08-04": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 11072.0,
+      "cheapest_airline": "Jin Air",
+      "ci_price": null
+    }
+  ],
+  "RMQ_FUK_2026-08-07_2026-08-11": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 9756.0,
+      "cheapest_airline": "Jin Air",
+      "ci_price": null
+    }
+  ],
+  "RMQ_FUK_2026-08-14_2026-08-18": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 12001.0,
+      "cheapest_airline": "Jin Air",
+      "ci_price": null
+    }
+  ],
+  "RMQ_FUK_2026-08-21_2026-08-25": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 11895.0,
+      "cheapest_airline": "Jin Air",
+      "ci_price": null
+    }
+  ],
+  "RMQ_FUK_2026-08-28_2026-09-01": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 10501.0,
+      "cheapest_airline": "Jin Air",
+      "ci_price": 26334.0
+    }
+  ],
+  "RMQ_FUK_2026-09-04_2026-09-08": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 11001.0,
+      "cheapest_airline": "Jin Air",
+      "ci_price": 27084.0
+    }
+  ],
+  "RMQ_FUK_2026-09-11_2026-09-15": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 11377.0,
+      "cheapest_airline": "Hong Kong Express",
+      "ci_price": 27084.0
+    }
+  ],
+  "RMQ_FUK_2026-09-18_2026-09-22": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 11377.0,
+      "cheapest_airline": "Hong Kong Express",
+      "ci_price": 26334.0
+    }
+  ],
+  "RMQ_FUK_2026-09-25_2026-09-29": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 12975.0,
+      "cheapest_airline": "Jin Air",
+      "ci_price": 35234.0
+    }
+  ],
+  "RMQ_FUK_2026-10-02_2026-10-06": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 15560.0,
+      "cheapest_airline": "Jin Air",
+      "ci_price": 28084.0
+    }
+  ],
+  "RMQ_FUK_2026-10-09_2026-10-13": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 15057.0,
+      "cheapest_airline": "Jin Air",
+      "ci_price": null
+    }
+  ],
+  "RMQ_FUK_2026-10-16_2026-10-20": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 13499.0,
+      "cheapest_airline": "Jin Air",
+      "ci_price": 28084.0
+    }
+  ],
+  "RMQ_FUK_2026-10-23_2026-10-27": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 15543.0,
+      "cheapest_airline": "Jin Air",
+      "ci_price": null
+    }
+  ],
+  "RMQ_SDJ_2026-07-10_2026-07-14": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 82651.0,
+      "cheapest_airline": "STARLUX Airlines / JAL",
+      "ci_price": null
+    }
+  ],
+  "RMQ_SDJ_2026-07-17_2026-07-21": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 82651.0,
+      "cheapest_airline": "STARLUX Airlines / JAL",
+      "ci_price": null
+    }
+  ],
+  "RMQ_SDJ_2026-07-24_2026-07-28": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 82651.0,
+      "cheapest_airline": "STARLUX Airlines / JAL",
+      "ci_price": null
+    }
+  ],
+  "RMQ_SDJ_2026-07-31_2026-08-04": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 82651.0,
+      "cheapest_airline": "STARLUX Airlines / JAL",
+      "ci_price": null
+    }
+  ],
+  "RMQ_SDJ_2026-08-07_2026-08-11": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 82651.0,
+      "cheapest_airline": "STARLUX Airlines / JAL",
+      "ci_price": null
+    }
+  ],
+  "RMQ_CTS_2026-07-10_2026-07-14": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 21156.0,
+      "cheapest_airline": "Jin Air",
+      "ci_price": null
+    }
+  ],
+  "RMQ_CTS_2026-07-17_2026-07-21": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 21020.0,
+      "cheapest_airline": "Jin Air",
+      "ci_price": null
+    }
+  ],
+  "RMQ_CTS_2026-07-24_2026-07-28": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 87235.0,
+      "cheapest_airline": "STARLUX Airlines / JAL",
+      "ci_price": null
+    }
+  ],
+  "RMQ_CTS_2026-07-31_2026-08-04": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 23521.0,
+      "cheapest_airline": "Jin Air",
+      "ci_price": null
+    }
+  ],
+  "RMQ_CTS_2026-08-07_2026-08-11": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 83993.0,
+      "cheapest_airline": "STARLUX Airlines / JAL",
+      "ci_price": null
+    }
+  ],
+  "RMQ_CTS_2026-08-14_2026-08-18": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 21998.0,
+      "cheapest_airline": "Jin Air",
+      "ci_price": null
+    }
+  ],
+  "RMQ_CTS_2026-08-21_2026-08-25": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 29187.0,
+      "cheapest_airline": "Hong Kong Express / Cathay Pacific",
+      "ci_price": null
+    }
+  ],
+  "RMQ_CTS_2026-08-28_2026-09-01": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 86723.0,
+      "cheapest_airline": "STARLUX Airlines / JAL",
+      "ci_price": null
+    }
+  ],
+  "RMQ_CTS_2026-09-04_2026-09-08": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 85876.0,
+      "cheapest_airline": "STARLUX Airlines / JAL",
+      "ci_price": null
+    }
+  ],
+  "RMQ_CTS_2026-09-11_2026-09-15": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 85876.0,
+      "cheapest_airline": "STARLUX Airlines / JAL",
+      "ci_price": null
+    }
+  ],
+  "RMQ_CTS_2026-09-18_2026-09-22": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 85876.0,
+      "cheapest_airline": "STARLUX Airlines / JAL",
+      "ci_price": null
+    }
+  ],
+  "RMQ_CTS_2026-09-25_2026-09-29": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 82928.0,
+      "cheapest_airline": "STARLUX Airlines / JAL",
+      "ci_price": null
+    }
+  ],
+  "RMQ_CTS_2026-10-02_2026-10-06": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 21019.0,
+      "cheapest_airline": "Jin Air",
+      "ci_price": null
+    }
+  ],
+  "RMQ_CTS_2026-10-09_2026-10-13": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 15546.0,
+      "cheapest_airline": "Jin Air",
+      "ci_price": null
+    }
+  ],
+  "RMQ_CTS_2026-10-16_2026-10-20": [
+    {
+      "date_checked": "2026-07-05",
+      "cheapest_price": 13400.0,
+      "cheapest_airline": "Jin Air",
+      "ci_price": null
+    }
+  ]
+}
