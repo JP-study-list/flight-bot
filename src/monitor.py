@@ -59,21 +59,25 @@ def search_round_trip(origin, destination, depart_date, return_date):
         print(f"[warn] 查詢失敗 {origin}->{destination} {depart_date}->{return_date}: {e}")
         return None
 
-
 def extract_all_prices(result):
-    """回傳這次查詢結果裡，每個航班的 (航空公司名稱, 價格) 清單"""
-    if not result or not result.flights:
+    """回傳這次查詢結果裡，每個航班的 (航空公司名稱, 價格) 清單
+    新版 fast-flights 的結果本身就是清單，每項有 .price（數字）與 .airlines（清單）"""
+    if not result:
         return []
     flights = []
-    for f in result.flights:
-        name = f.name or "Unknown"
-        price_str = str(f.price).replace(",", "").replace("$", "").replace("NT", "").strip()
+    for f in result:
+        airlines = getattr(f, "airlines", None) or ["Unknown"]
+        name = " / ".join(airlines)
         try:
-            price = float(price_str)
-        except ValueError:
+            price = float(f.price)
+        except (TypeError, ValueError):
+            continue
+        if price <= 0:  # 0 或負值代表無報價
             continue
         flights.append((name, price))
     return flights
+
+
 
 
 def is_china_airlines(name):
