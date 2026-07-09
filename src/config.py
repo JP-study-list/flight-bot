@@ -53,7 +53,7 @@ MIN_TRIP_DAYS = 2
 MAX_TRIP_DAYS = 30
 
 # 儀表板網址（附在每則通知結尾）
-DASHBOARD_URL = "https://02pokemonplus-ux.github.io/flight-bot/"
+DASHBOARD_URL = "https://JP-study-list.github.io/flight-bot/"
 
 # 歷史資料保留天數（供儀表板趨勢圖使用）
 HISTORY_KEEP_DAYS = 90
