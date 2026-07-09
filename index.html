@@ -53,7 +53,7 @@
 
   /* ---- 篩選列 ---- */
   .filters {
-    display: grid; grid-template-columns: repeat(4, 1fr) auto; gap: 12px;
+    display: grid; grid-template-columns: repeat(5, 1fr) auto; gap: 12px;
     background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
     padding: 16px; margin-bottom: 32px;
   }
@@ -116,6 +116,19 @@
   body.dark .badge { color: #ff8a95; }
 
   /* 組合卡 */
+  .combo-datebar {
+    display: grid; grid-template-columns: 1fr 1fr auto; gap: 12px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+    padding: 14px 16px; margin-bottom: 14px; max-width: 560px;
+  }
+  .combo-datebar label { display: block; font-size: 12px; color: var(--text2); margin-bottom: 5px; }
+  .combo-datebar input {
+    width: 100%; background: var(--bg); border: 1px solid var(--border);
+    color: var(--text); border-radius: 9px; padding: 9px 10px;
+    font-family: var(--mono); font-size: 13px;
+  }
+  .combo-datebar .reset { align-self: end; }
+  @media (max-width: 640px) { .combo-datebar { grid-template-columns: 1fr 1fr; max-width: none; } }
   .combo-card .leg {
     display: flex; justify-content: space-between; align-items: center;
     font-family: var(--mono); font-size: 13px; margin-top: 8px; gap: 8px;
@@ -190,6 +203,14 @@
 
     <div class="filters">
       <div>
+        <label for="f-region">出發地區</label>
+        <select id="f-region">
+          <option value="">全部</option>
+          <option value="TW">台灣出發</option>
+          <option value="JP">日本出發</option>
+        </select>
+      </div>
+      <div>
         <label for="f-origin">出發地</label>
         <select id="f-origin"><option value="">全部</option></select>
       </div>
@@ -219,7 +240,18 @@
     <section>
       <div class="sec-head">
         <span class="sec-num">02</span><h2>最便宜來回組合</h2>
-        <span class="sec-note">2–30 天行程・去回可分開點選查票</span>
+        <span class="sec-note" id="combo-note">2–30 天行程・去回可分開點選查票</span>
+      </div>
+      <div class="combo-datebar">
+        <div>
+          <label for="f-combo-out">指定去程日期</label>
+          <input type="date" id="f-combo-out">
+        </div>
+        <div>
+          <label for="f-combo-in">指定回程日期</label>
+          <input type="date" id="f-combo-in">
+        </div>
+        <div class="reset"><button id="f-combo-clear" type="button">清除日期</button></div>
       </div>
       <div class="grid" id="combo-grid"></div>
     </section>
@@ -332,21 +364,30 @@ function buildFilters(){
   const dSel = document.getElementById('f-dest');
   for(const c of origins) oSel.add(new Option(`${c} ${zh(c)}`, c));
   for(const c of dests)   dSel.add(new Option(`${c} ${zh(c)}`, c));
-  for(const id of ['f-origin','f-dest','f-from','f-to'])
+  for(const id of ['f-region','f-origin','f-dest','f-from','f-to','f-combo-out','f-combo-in'])
     document.getElementById(id).addEventListener('change', render);
+  document.getElementById('f-combo-clear').addEventListener('click', ()=>{
+    document.getElementById('f-combo-out').value = '';
+    document.getElementById('f-combo-in').value = '';
+    render();
+  });
   document.getElementById('f-reset').addEventListener('click', ()=>{
-    for(const id of ['f-origin','f-dest','f-from','f-to'])
+    for(const id of ['f-region','f-origin','f-dest','f-from','f-to'])
       document.getElementById(id).value = '';
     render();
   });
 }
 
+const TW_AIRPORTS = ['TPE','RMQ','TSA'];
+
 function getFiltered(){
+  const region = document.getElementById('f-region').value;
   const o = document.getElementById('f-origin').value;
   const d = document.getElementById('f-dest').value;
   const from = document.getElementById('f-from').value;
   const to = document.getElementById('f-to').value;
   return DATA.latest.filter(r =>
+    (!region || (region === 'TW') === TW_AIRPORTS.includes(r.o)) &&
     (!o || r.o === o) && (!d || r.d === d) &&
     (!from || r.date >= from) && (!to || r.date <= to)
   );
@@ -380,17 +421,36 @@ function renderCI(rows){
     : '<div class="empty">目前篩選範圍內沒有華航報價</div>';
 }
 
-/* ---- 02 來回組合 ---- */
+/* ---- 02 來回組合 ----
+   未指定日期：自動在 2–30 天內找每個機場對的最便宜組合
+   指定去程＋回程日期：精確顯示每個機場對在那兩天的票價加總
+   出發地區選「日本出發」時，組合方向翻轉為 日本→台灣→日本 */
 function renderCombos(){
+  const region = document.getElementById('f-region').value;
   const from = document.getElementById('f-from').value;
   const to = document.getElementById('f-to').value;
   const oF = document.getElementById('f-origin').value;
   const dF = document.getElementById('f-dest').value;
+  const exactOut = document.getElementById('f-combo-out').value;
+  const exactIn = document.getElementById('f-combo-in').value;
+  const jpDeparture = region === 'JP';
+  const exactMode = exactOut && exactIn;
+
+  document.getElementById('combo-note').textContent = exactMode
+    ? (jpDeparture ? '指定日期模式・日本出發' : '指定日期模式・台灣出發')
+    : '2–30 天行程・去回可分開點選查票';
+
+  const grid = document.getElementById('combo-grid');
+
+  if(exactMode && exactIn <= exactOut){
+    grid.innerHTML = '<div class="empty">回程日期需在去程日期之後</div>';
+    return;
+  }
 
   const inRange = r => (!from || r.date >= from) && (!to || r.date <= to);
   const byDir = new Map();
   for(const r of DATA.latest){
-    if(!inRange(r)) continue;
+    if(!exactMode && !inRange(r)) continue;
     const k = r.o + '-' + r.d;
     if(!byDir.has(k)) byDir.set(k, []);
     byDir.get(k).push(r);
@@ -398,7 +458,7 @@ function renderCombos(){
 
   const pairs = new Set();
   for(const r of DATA.latest){
-    const tw = ['TPE','RMQ','TSA'].includes(r.o) ? r.o : r.d;
+    const tw = TW_AIRPORTS.includes(r.o) ? r.o : r.d;
     const jp = tw === r.o ? r.d : r.o;
     if(oF && tw !== oF && jp !== oF) continue;
     if(dF && tw !== dF && jp !== dF) continue;
@@ -408,31 +468,44 @@ function renderCombos(){
   const combos = [];
   for(const p of pairs){
     const [tw, jp] = p.split('|');
-    const out = byDir.get(tw + '-' + jp) || [];
-    const back = byDir.get(jp + '-' + tw) || [];
+    // 依出發地區決定去程方向
+    const [depCity, arrCity] = jpDeparture ? [jp, tw] : [tw, jp];
+    const outLegs = byDir.get(depCity + '-' + arrCity) || [];
+    const inLegs = byDir.get(arrCity + '-' + depCity) || [];
+
     let best = null;
-    for(const a of out){
-      for(const b of back){
-        const gap = (new Date(b.date) - new Date(a.date)) / 86400000;
-        if(gap < MIN_TRIP_DAYS || gap > MAX_TRIP_DAYS) continue;
-        const total = a.price + b.price;
-        if(!best || total < best.total) best = {tw, jp, out:a, back:b, total, days:gap};
+    if(exactMode){
+      const a = outLegs.find(r => r.date === exactOut);
+      const b = inLegs.find(r => r.date === exactIn);
+      if(a && b){
+        const days = (new Date(b.date) - new Date(a.date)) / 86400000;
+        best = {dep: depCity, arr: arrCity, out: a, back: b, total: a.price + b.price, days};
+      }
+    }else{
+      for(const a of outLegs){
+        for(const b of inLegs){
+          const gap = (new Date(b.date) - new Date(a.date)) / 86400000;
+          if(gap < MIN_TRIP_DAYS || gap > MAX_TRIP_DAYS) continue;
+          const total = a.price + b.price;
+          if(!best || total < best.total)
+            best = {dep: depCity, arr: arrCity, out: a, back: b, total, days: gap};
+        }
       }
     }
     if(best) combos.push(best);
   }
   combos.sort((a,b)=>a.total-b.total);
 
-  document.getElementById('combo-grid').innerHTML = combos.length ? combos.map(c=>`
+  grid.innerHTML = combos.length ? combos.map(c=>`
     <div class="card combo-card">
-      <div class="route">${c.tw}<span class="arrow">⇄</span>${c.jp}</div>
-      <div class="route-zh">${zh(c.tw)} ⇄ ${zh(c.jp)}</div>
+      <div class="route">${c.dep}<span class="arrow">⇄</span>${c.arr}</div>
+      <div class="route-zh">${zh(c.dep)} ⇄ ${zh(c.arr)}</div>
       <div class="leg">
-        <a href="${bookURL(c.tw, c.jp, c.out.date)}" target="_blank" rel="noopener">去 ${c.out.date}</a>
+        <a href="${bookURL(c.dep, c.arr, c.out.date)}" target="_blank" rel="noopener">去 ${c.out.date}</a>
         <span>${fmt(c.out.price)} <span class="d">${c.out.airline}</span></span>
       </div>
       <div class="leg">
-        <a href="${bookURL(c.jp, c.tw, c.back.date)}" target="_blank" rel="noopener">回 ${c.back.date}</a>
+        <a href="${bookURL(c.arr, c.dep, c.back.date)}" target="_blank" rel="noopener">回 ${c.back.date}</a>
         <span>${fmt(c.back.price)} <span class="d">${c.back.airline}</span></span>
       </div>
       <div class="combo-total">
@@ -440,7 +513,9 @@ function renderCombos(){
         <span class="sum">${fmt(c.total)}</span>
       </div>
     </div>`).join('')
-    : '<div class="empty">目前篩選範圍內組不出 2–30 天的來回行程</div>';
+    : `<div class="empty">${exactMode
+        ? '指定的兩個日期查無同機場對的去回票價（該日期可能不在掃描範圍，或資料尚未涵蓋）'
+        : '目前篩選範圍內組不出 2–30 天的來回行程'}</div>`;
 }
 
 /* ---- 03 單程總覽 ---- */
