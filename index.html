@@ -10,37 +10,39 @@
   :root {
     --bg: #f5f5f3; --surface: #fff; --border: #e0e0e0;
     --text: #1a1a1a; --text2: #666; --text3: #999;
-    --accent: #1e4b8f; --accent-soft: rgba(30,75,143,.08);
+    --accent: #1e4b8f; --accent-rgb: 30,75,143; --accent-soft: rgba(30,75,143,.08);
     --grid-line: #ececea;
+    --up: #c0392b; --down: #1e8449;
     --mono: 'IBM Plex Mono', monospace;
   }
   body.dark {
     --bg: #111110; --surface: #1c1c1a; --border: #2e2e2b;
     --text: #f0ede8; --text2: #a8a69e; --text3: #777;
-    --accent: #6fa3e8; --accent-soft: rgba(111,163,232,.12);
+    --accent: #6fa3e8; --accent-rgb: 111,163,232; --accent-soft: rgba(111,163,232,.12);
     --grid-line: #26262a;
+    --up: #ff6b5e; --down: #5fd08a;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   @media (prefers-reduced-motion: reduce){ * { transition: none !important; animation: none !important; } }
   body {
     font-family: 'Noto Sans TC', sans-serif;
     background: var(--bg); color: var(--text);
-    min-height: 100vh; padding: 36px 20px 70px;
+    min-height: 100vh; padding: 0 20px 70px;
     font-size: 15px; line-height: 1.6;
     transition: background .2s, color .2s;
   }
   a { color: var(--accent); }
   .container { max-width: 1080px; margin: 0 auto; }
 
-  /* ---- 頁首：標題左上、工具列右上 ---- */
-  header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 26px; gap: 16px; }
-  header h1 { font-weight: 700; font-size: clamp(24px, 5vw, 34px); letter-spacing: .02em; }
+  /* ---- 頁首：左收合鈕、標題置中、右晝夜鈕 ---- */
+  header {
+    display: grid; grid-template-columns: 44px 1fr 44px; align-items: center;
+    gap: 12px; padding: 26px 0 20px;
+  }
+  header h1 { font-weight: 700; font-size: clamp(22px, 5vw, 32px); letter-spacing: .02em; text-align: center; }
   header h1 .accent { color: var(--accent); }
-  .subtitle { margin-top: 6px; color: var(--text2); font-size: 13px; }
-  .updated { margin-top: 4px; font-family: var(--mono); font-size: 12px; color: var(--text3); }
-  .toolbar { display: flex; gap: 8px; flex-shrink: 0; }
   .tool-btn {
-    width: 36px; height: 36px; border-radius: 50%;
+    width: 38px; height: 38px; border-radius: 50%;
     border: 1px solid var(--border); background: var(--surface);
     color: var(--text2); cursor: pointer;
     display: flex; align-items: center; justify-content: center;
@@ -51,11 +53,51 @@
     outline: 2px solid var(--accent); outline-offset: 1px;
   }
 
-  /* ---- 篩選列 ---- */
+  /* ---- 側欄（資訊抽屜） ---- */
+  .drawer-backdrop {
+    position: fixed; inset: 0; background: rgba(0,0,0,.4);
+    opacity: 0; pointer-events: none; transition: opacity .2s; z-index: 90;
+  }
+  .drawer {
+    position: fixed; top: 0; left: 0; bottom: 0; width: 300px; max-width: 85vw;
+    background: var(--surface); border-right: 1px solid var(--border);
+    transform: translateX(-100%); transition: transform .22s ease; z-index: 100;
+    padding: 22px 20px; overflow-y: auto;
+  }
+  body.drawer-open .drawer { transform: translateX(0); }
+  body.drawer-open .drawer-backdrop { opacity: 1; pointer-events: auto; }
+  .drawer h3 {
+    font-size: 12px; color: var(--text3); letter-spacing: .1em;
+    margin: 20px 0 8px; font-weight: 600;
+  }
+  .drawer h3:first-of-type { margin-top: 8px; }
+  .drawer .row { display: flex; justify-content: space-between; gap: 10px; font-size: 13.5px; padding: 3px 0; }
+  .drawer .row .k { color: var(--text2); flex-shrink: 0; }
+  .drawer .row .v { font-family: var(--mono); font-size: 12.5px; text-align: right; }
+  .drawer p.tip { font-size: 12.5px; color: var(--text2); margin: 4px 0; padding-left: 14px; position: relative; }
+  .drawer p.tip::before { content: '·'; position: absolute; left: 2px; color: var(--accent); }
+  .drawer-close { position: absolute; top: 14px; right: 14px; }
+
+  /* ---- 時效警示 ---- */
+  .stale-banner {
+    display: none; background: #8a6d1a; color: #fff; border-radius: 12px;
+    padding: 10px 16px; font-size: 13.5px; margin-bottom: 18px;
+  }
+  body.dark .stale-banner { background: #6b5514; }
+  .stale-banner.show { display: block; }
+
+  /* ---- 篩選列（手機吸附＋可收合） ---- */
+  .filter-wrap { position: sticky; top: 0; z-index: 40; background: var(--bg); padding: 6px 0 4px; margin-bottom: 26px; }
+  .filter-toggle {
+    display: none; width: 100%; border: 1px solid var(--border); background: var(--surface);
+    color: var(--text); border-radius: 12px; padding: 10px 14px; font-size: 14px;
+    font-family: 'Noto Sans TC', sans-serif; cursor: pointer;
+    align-items: center; justify-content: space-between; gap: 8px;
+  }
   .filters {
     display: grid; grid-template-columns: repeat(5, 1fr) auto; gap: 12px;
     background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
-    padding: 16px; margin-bottom: 32px;
+    padding: 16px;
   }
   .filters label { display: block; font-size: 12px; color: var(--text2); margin-bottom: 5px; }
   .filters select, .filters input {
@@ -65,16 +107,21 @@
   }
   .filters input[type=date] { font-family: var(--mono); font-size: 13px; }
   .filters .reset { align-self: end; }
-  .reset button {
+  .reset button, .more-btn {
     background: none; border: 1px solid var(--border); color: var(--text2);
     border-radius: 9px; padding: 9px 16px; font-size: 13px; cursor: pointer;
     font-family: 'Noto Sans TC', sans-serif; white-space: nowrap;
   }
-  .reset button:hover { border-color: var(--accent); color: var(--accent); }
+  .reset button:hover, .more-btn:hover { border-color: var(--accent); color: var(--accent); }
+  @media (max-width: 820px) {
+    .filter-toggle { display: flex; }
+    .filters { display: none; margin-top: 8px; grid-template-columns: 1fr 1fr; }
+    .filter-wrap.open .filters { display: grid; }
+  }
 
   /* ---- 區塊 ---- */
   section { margin-bottom: 44px; }
-  .sec-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 14px; }
+  .sec-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
   .sec-num { font-family: var(--mono); font-size: 12px; font-weight: 600; color: var(--accent); letter-spacing: .06em; }
   h2 { font-weight: 700; font-size: 18px; letter-spacing: .02em; }
   .sec-note { font-size: 12px; color: var(--text3); margin-left: auto; text-align: right; }
@@ -94,11 +141,15 @@
   .price {
     font-family: var(--mono); font-size: 25px; font-weight: 600;
     color: var(--accent); margin-top: 9px; font-variant-numeric: tabular-nums;
+    display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap;
   }
-  .price small { font-size: 12px; color: var(--text3); font-weight: 400; margin-left: 4px; }
+  .price small { font-size: 12px; color: var(--text3); font-weight: 400; }
+  .delta { font-family: var(--mono); font-size: 12.5px; font-weight: 600; }
+  .delta.up { color: var(--up); }
+  .delta.down { color: var(--down); }
+  .delta.flat { color: var(--text3); }
   .meta { font-size: 12px; color: var(--text2); margin-top: 6px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 
-  /* 航空公司彩色標籤 */
   .chip {
     display: inline-flex; align-items: center; gap: 5px;
     font-size: 11.5px; border-radius: 99px; padding: 1px 9px 1px 6px;
@@ -106,7 +157,6 @@
   }
   .chip i { width: 8px; height: 8px; border-radius: 50%; display: inline-block; flex: none; }
 
-  /* 華航專區卡 */
   .ci-card { border-left: 3px solid #d02c3a; }
   .badge {
     display: inline-block; font-size: 10.5px; letter-spacing: .12em;
@@ -115,7 +165,7 @@
   body.dark .ci-card { border-left-color: #ff5f6e; }
   body.dark .badge { color: #ff8a95; }
 
-  /* 組合卡 */
+  /* 組合 */
   .combo-datebar {
     display: grid; grid-template-columns: 1fr 1fr auto; gap: 12px;
     background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
@@ -142,8 +192,15 @@
   }
   .combo-total .sum { font-family: var(--mono); font-size: 21px; font-weight: 600; color: var(--accent); }
   .combo-total .days { font-size: 12px; color: var(--text3); }
+  .combo-alt { display: none; border-top: 1px dashed var(--border); margin-top: 10px; padding-top: 4px; }
+  .combo-card.expanded .combo-alt { display: block; }
+  .combo-alt .alt-row {
+    display: flex; justify-content: space-between; font-family: var(--mono);
+    font-size: 12px; color: var(--text2); padding: 4px 0; gap: 8px;
+  }
+  .combo-alt .alt-row a { color: var(--accent); text-decoration: none; }
+  .more-btn { margin-top: 10px; width: 100%; padding: 6px; font-size: 12px; }
 
-  /* 總覽卡右上角的趨勢小按鈕 */
   .trend-btn {
     position: absolute; top: 12px; right: 12px;
     width: 28px; height: 28px; border-radius: 8px;
@@ -154,9 +211,36 @@
   .card.selected { border-color: var(--accent); }
   .card.selected .trend-btn { border-color: var(--accent); color: var(--accent); }
 
-  /* 趨勢圖 */
-  .chart-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 18px; }
-  .chart-panel .hint { font-size: 12px; color: var(--text3); margin-bottom: 12px; }
+  /* 航線分析：熱圖＋趨勢 */
+  .analysis-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 18px; }
+  .analysis-controls { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+  .analysis-controls > div { min-width: 180px; }
+  .analysis-controls label { display: block; font-size: 12px; color: var(--text2); margin-bottom: 5px; }
+  .analysis-controls select {
+    width: 100%; background: var(--bg); border: 1px solid var(--border);
+    color: var(--text); border-radius: 9px; padding: 9px 10px; font-size: 14px;
+    font-family: 'Noto Sans TC', sans-serif;
+  }
+  .heat-legend { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text3); margin: 4px 0 14px; }
+  .heat-legend .bar {
+    width: 120px; height: 10px; border-radius: 5px;
+    background: linear-gradient(90deg, rgba(var(--accent-rgb), .9), rgba(var(--accent-rgb), .12));
+  }
+  .months { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 16px; margin-bottom: 24px; }
+  .month h4 { font-size: 13px; font-weight: 600; margin-bottom: 6px; font-family: var(--mono); color: var(--text2); }
+  .cal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+  .cal .wd { font-size: 10px; color: var(--text3); text-align: center; padding-bottom: 2px; }
+  .cal .cell {
+    aspect-ratio: 1; border-radius: 6px; font-family: var(--mono);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    font-size: 10px; line-height: 1.15; text-decoration: none; color: var(--text2);
+    background: var(--bg); border: 1px solid transparent;
+  }
+  .cal .cell.blank { background: transparent; }
+  .cal .cell.has { color: #fff; font-weight: 600; }
+  .cal .cell.has:hover { border-color: var(--text); }
+  .cal .cell .p { font-size: 9px; font-weight: 400; opacity: .95; }
+  .hint { font-size: 12px; color: var(--text3); margin-bottom: 12px; }
   .chart-box { position: relative; height: 320px; }
   @media (max-width: 640px) { .chart-box { height: 240px; } }
 
@@ -166,67 +250,96 @@
     grid-column: 1 / -1;
   }
   #loading { padding: 60px 0; text-align: center; color: var(--text3); font-family: var(--mono); }
-
   footer { text-align: center; margin-top: 44px; font-size: 12px; color: var(--text3); }
-
-  @media (max-width: 820px) { .filters { grid-template-columns: 1fr 1fr; } }
   @media (max-width: 460px) { .grid { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
+
+<div class="drawer-backdrop" id="drawer-backdrop"></div>
+<aside class="drawer" id="drawer" aria-label="資訊欄">
+  <button class="tool-btn drawer-close" id="drawer-close" type="button" aria-label="關閉資訊欄">
+    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </button>
+
+  <h3>資料狀態</h3>
+  <div class="row"><span class="k">最後更新</span><span class="v" id="d-updated">—</span></div>
+  <div class="row"><span class="k">價格筆數</span><span class="v" id="d-count">—</span></div>
+  <div class="row"><span class="k">日期涵蓋</span><span class="v" id="d-range">—</span></div>
+
+  <h3>監控範圍</h3>
+  <div class="row"><span class="k">機場對</span><span class="v" id="d-pairs">—</span></div>
+  <div class="row"><span class="k">方向航線</span><span class="v" id="d-routes">—</span></div>
+  <div class="row"><span class="k">掃描頻率</span><span class="v">每日一次</span></div>
+
+  <h3>通知門檻</h3>
+  <div class="row"><span class="k">單程好價</span><span class="v">&lt; 4,500 TWD</span></div>
+  <div class="row"><span class="k">華航好價</span><span class="v">&lt; 5,500 TWD</span></div>
+  <div class="row"><span class="k">相對判斷</span><span class="v">低於均價 25%</span></div>
+  <div class="row"><span class="k">華航相對</span><span class="v">低於均價 15%</span></div>
+
+  <h3>通知管道</h3>
+  <p class="tip">LINE 官方帳號與 Discord 頻道，找到好價自動推播</p>
+  <p class="tip">沒有好價的日子不會打擾</p>
+
+  <h3>使用提示</h3>
+  <p class="tip">點任何卡片直接開 Google Flights 查票</p>
+  <p class="tip">總覽卡右上小圖示可切換下方航線分析</p>
+  <p class="tip">組合區指定去回日期，可查特定兩天的總價</p>
+  <p class="tip">篩選條件會寫進網址，可直接存書籤分享</p>
+</aside>
+
 <div class="container">
 
   <header>
-    <div>
-      <h1>機票低價<span class="accent">儀表板</span></h1>
-      <div class="subtitle">台灣 ⇄ 日本單程票價監控・點卡片直接前往查票購票</div>
-      <div class="updated" id="updated-at">載入中</div>
-    </div>
-    <div class="toolbar">
-      <button class="tool-btn" id="theme-btn" type="button" title="切換深色模式" aria-label="切換深色模式">
-        <svg id="icon-moon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-        </svg>
-        <svg id="icon-sun" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:none">
-          <circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/>
-          <line x1="4.22" y1="4.22" x2="6.34" y2="6.34"/><line x1="17.66" y1="17.66" x2="19.78" y2="19.78"/>
-          <line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/>
-          <line x1="4.22" y1="19.78" x2="6.34" y2="17.66"/><line x1="17.66" y1="6.34" x2="19.78" y2="4.22"/>
-        </svg>
-      </button>
-    </div>
+    <button class="tool-btn" id="drawer-btn" type="button" title="資訊欄" aria-label="開啟資訊欄">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <h1>機票低價<span class="accent">儀表板</span></h1>
+    <button class="tool-btn" id="theme-btn" type="button" title="切換深色模式" aria-label="切換深色模式">
+      <svg id="icon-moon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg id="icon-sun" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:none"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="4.22" y1="4.22" x2="6.34" y2="6.34"/><line x1="17.66" y1="17.66" x2="19.78" y2="19.78"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/><line x1="4.22" y1="19.78" x2="6.34" y2="17.66"/><line x1="17.66" y1="6.34" x2="19.78" y2="4.22"/></svg>
+    </button>
   </header>
+
+  <div class="stale-banner" id="stale-banner">資料已超過 36 小時未更新，排程可能異常，建議到 GitHub Actions 檢查。</div>
 
   <div id="loading">正在讀取價格資料…</div>
 
   <div id="app" hidden>
 
-    <div class="filters">
-      <div>
-        <label for="f-region">出發地區</label>
-        <select id="f-region">
-          <option value="">全部</option>
-          <option value="TW">台灣出發</option>
-          <option value="JP">日本出發</option>
-        </select>
+    <div class="filter-wrap" id="filter-wrap">
+      <button class="filter-toggle" id="filter-toggle" type="button">
+        <span>篩選條件</span>
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="filters">
+        <div>
+          <label for="f-region">出發地區</label>
+          <select id="f-region">
+            <option value="">全部</option>
+            <option value="TW">台灣出發</option>
+            <option value="JP">日本出發</option>
+          </select>
+        </div>
+        <div>
+          <label for="f-origin">出發地</label>
+          <select id="f-origin"><option value="">全部</option></select>
+        </div>
+        <div>
+          <label for="f-dest">目的地</label>
+          <select id="f-dest"><option value="">全部</option></select>
+        </div>
+        <div>
+          <label for="f-from">出發日（起）</label>
+          <input type="date" id="f-from">
+        </div>
+        <div>
+          <label for="f-to">出發日（迄）</label>
+          <input type="date" id="f-to">
+        </div>
+        <div class="reset"><button id="f-reset" type="button">清除篩選</button></div>
       </div>
-      <div>
-        <label for="f-origin">出發地</label>
-        <select id="f-origin"><option value="">全部</option></select>
-      </div>
-      <div>
-        <label for="f-dest">目的地</label>
-        <select id="f-dest"><option value="">全部</option></select>
-      </div>
-      <div>
-        <label for="f-from">出發日（起）</label>
-        <input type="date" id="f-from">
-      </div>
-      <div>
-        <label for="f-to">出發日（迄）</label>
-        <input type="date" id="f-to">
-      </div>
-      <div class="reset"><button id="f-reset" type="button">清除篩選</button></div>
     </div>
 
     <section>
@@ -259,25 +372,40 @@
     <section>
       <div class="sec-head">
         <span class="sec-num">03</span><h2>單程最低價總覽</h2>
-        <span class="sec-note">點卡片查票・右上小圖示看趨勢</span>
+        <span class="sec-note">▲▼ 為與前一次掃描相比・點卡片查票</span>
       </div>
       <div class="grid" id="route-grid"></div>
     </section>
 
     <section>
       <div class="sec-head">
-        <span class="sec-num">04</span><h2>價格趨勢</h2>
+        <span class="sec-num">04</span><h2>航線分析</h2>
         <span class="sec-note" id="trend-route-label"></span>
       </div>
-      <div class="chart-panel">
-        <div class="hint">每日掃描後記錄該航線「全航班最低價」與「華航最低價」的變化</div>
+      <div class="analysis-panel">
+        <div class="analysis-controls">
+          <div>
+            <label for="a-route">分析航線</label>
+            <select id="a-route"></select>
+          </div>
+          <div>
+            <label for="a-compare">趨勢比較航線（可選）</label>
+            <select id="a-compare"><option value="">無</option></select>
+          </div>
+        </div>
+
+        <div class="hint">價格日曆：顏色越深越便宜，點日期直接查票</div>
+        <div class="heat-legend"><span>便宜</span><span class="bar"></span><span>貴</span></div>
+        <div class="months" id="heat-months"></div>
+
+        <div class="hint">價格趨勢：每日掃描的最低價變化，虛線為通知門檻</div>
         <div class="chart-box"><canvas id="trend-chart"></canvas></div>
       </div>
     </section>
 
   </div>
 
-  <footer>每天台灣時間 09:00 自動更新</footer>
+  <footer>每天自動更新一次</footer>
 </div>
 
 <script>
@@ -285,22 +413,17 @@ const AIRPORT_ZH = {
   TPE:'桃園', RMQ:'台中', TSA:'松山',
   NRT:'東京成田', HND:'東京羽田', KIX:'大阪關西', FUK:'福岡', SDJ:'仙台'
 };
+const TW_AIRPORTS = ['TPE','RMQ','TSA'];
 const MIN_TRIP_DAYS = 2, MAX_TRIP_DAYS = 30;
+const THRESHOLD_ALL = 4500, THRESHOLD_CI = 5500;
+const STALE_HOURS = 36;
 
-/* 航空公司品牌色（比對不到的用灰藍） */
 const AIRLINE_COLORS = [
   ['China Airlines', '#d02c3a'], ['華航', '#d02c3a'],
-  ['EVA', '#00784b'],
-  ['Peach', '#e8368f'],
-  ['Scoot', '#f5c400'],
-  ['Jetstar', '#ff5000'],
-  ['Jin Air', '#8bc53f'],
-  ['Tigerair', '#f6851f'],
-  ['STARLUX', '#8b734b'], ['Starlux', '#8b734b'],
-  ['ANA', '#1c2f6b'],
-  ['JAL', '#9d1f2e'], ['Japan Airlines', '#9d1f2e'],
-  ['Cathay', '#00645a'],
-  ['Batik', '#f2a900'],
+  ['EVA', '#00784b'], ['Peach', '#e8368f'], ['Scoot', '#f5c400'],
+  ['Jetstar', '#ff5000'], ['Jin Air', '#8bc53f'], ['Tigerair', '#f6851f'],
+  ['STARLUX', '#8b734b'], ['Starlux', '#8b734b'], ['ANA', '#1c2f6b'],
+  ['JAL', '#9d1f2e'], ['Japan Airlines', '#9d1f2e'], ['Cathay', '#00645a'], ['Batik', '#f2a900'],
 ];
 function airlineColor(name){
   for (const [k, c] of AIRLINE_COLORS) if (name.includes(k)) return c;
@@ -311,14 +434,24 @@ const chipHTML = name =>
 
 const fmt = n => Math.round(n).toLocaleString('en-US');
 const zh = c => AIRPORT_ZH[c] || c;
-
-/* Google Flights 查票連結（帶入航線與日期，可直接前往購票） */
 function bookURL(o, d, dateStr){
   const q = `flights from ${o} to ${d} on ${dateStr} one way`;
   return 'https://www.google.com/travel/flights?q=' + encodeURIComponent(q) + '&curr=TWD';
 }
 
-let DATA = null, selectedTrendRoute = null, chart = null;
+let DATA = null, selectedTrendRoute = null, compareRoute = '', chart = null;
+
+/* ---- 側欄 ---- */
+function setDrawer(open){ document.body.classList.toggle('drawer-open', open); }
+document.getElementById('drawer-btn').addEventListener('click', ()=>setDrawer(true));
+document.getElementById('drawer-close').addEventListener('click', ()=>setDrawer(false));
+document.getElementById('drawer-backdrop').addEventListener('click', ()=>setDrawer(false));
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') setDrawer(false); });
+
+/* ---- 手機篩選收合 ---- */
+document.getElementById('filter-toggle').addEventListener('click', ()=>{
+  document.getElementById('filter-wrap').classList.toggle('open');
+});
 
 /* ---- 晝夜模式 ---- */
 function applyTheme(dark){
@@ -326,13 +459,36 @@ function applyTheme(dark){
   document.getElementById('icon-moon').style.display = dark ? 'none' : '';
   document.getElementById('icon-sun').style.display = dark ? '' : 'none';
   try { localStorage.setItem('fare-dash-dark', dark ? '1' : '0'); } catch(e){}
-  if (DATA) renderTrend(); // 重繪圖表以套用主題色
+  if (DATA) { renderHeatmap(); renderTrend(); }
 }
 document.getElementById('theme-btn').addEventListener('click',
   () => applyTheme(!document.body.classList.contains('dark')));
-try {
-  if (localStorage.getItem('fare-dash-dark') === '1') applyTheme(true);
-} catch(e){}
+try { if (localStorage.getItem('fare-dash-dark') === '1') applyTheme(true); } catch(e){}
+
+/* ---- URL 同步 ---- */
+const URL_FIELDS = [
+  ['rg','f-region'], ['o','f-origin'], ['d','f-dest'],
+  ['f','f-from'], ['t','f-to'], ['co','f-combo-out'], ['ci','f-combo-in'],
+];
+function readURL(){
+  const p = new URLSearchParams(location.search);
+  for(const [key, id] of URL_FIELDS){
+    if(p.has(key)) document.getElementById(id).value = p.get(key);
+  }
+  if(p.has('rt')) selectedTrendRoute = p.get('rt');
+  if(p.has('cmp')) compareRoute = p.get('cmp');
+}
+function writeURL(){
+  const p = new URLSearchParams();
+  for(const [key, id] of URL_FIELDS){
+    const v = document.getElementById(id).value;
+    if(v) p.set(key, v);
+  }
+  if(selectedTrendRoute) p.set('rt', selectedTrendRoute);
+  if(compareRoute) p.set('cmp', compareRoute);
+  const qs = p.toString();
+  history.replaceState(null, '', qs ? '?' + qs : location.pathname);
+}
 
 /* ---- 初始化 ---- */
 async function init(){
@@ -348,13 +504,36 @@ async function init(){
   document.getElementById('loading').hidden = true;
   document.getElementById('app').hidden = false;
 
-  const t = DATA.updated_at ? new Date(DATA.updated_at) : null;
-  document.getElementById('updated-at').textContent = t
-    ? '資料更新於 ' + t.toLocaleString('zh-TW', {hour12:false})
-    : '尚無掃描資料';
-
+  fillDrawer();
+  checkStale();
   buildFilters();
+  buildAnalysisSelects();
+  readURL();
   render();
+}
+
+function fillDrawer(){
+  const t = DATA.updated_at ? new Date(DATA.updated_at) : null;
+  document.getElementById('d-updated').textContent =
+    t ? t.toLocaleString('zh-TW', {hour12:false}) : '尚無資料';
+  document.getElementById('d-count').textContent = DATA.latest.length.toLocaleString() + ' 筆';
+  if(DATA.latest.length){
+    const dates = DATA.latest.map(r=>r.date).sort();
+    document.getElementById('d-range').textContent = dates[0] + ' ～ ' + dates[dates.length-1];
+  }
+  const dirs = new Set(DATA.latest.map(r=>r.o+'-'+r.d));
+  const pairs = new Set([...dirs].map(k=>{
+    const [a,b] = k.split('-');
+    return TW_AIRPORTS.includes(a) ? a+'|'+b : b+'|'+a;
+  }));
+  document.getElementById('d-pairs').textContent = pairs.size + ' 對';
+  document.getElementById('d-routes').textContent = dirs.size + ' 條';
+}
+
+function checkStale(){
+  if(!DATA.updated_at) return;
+  const hours = (Date.now() - new Date(DATA.updated_at)) / 3600000;
+  if(hours > STALE_HOURS) document.getElementById('stale-banner').classList.add('show');
 }
 
 function buildFilters(){
@@ -364,21 +543,35 @@ function buildFilters(){
   const dSel = document.getElementById('f-dest');
   for(const c of origins) oSel.add(new Option(`${c} ${zh(c)}`, c));
   for(const c of dests)   dSel.add(new Option(`${c} ${zh(c)}`, c));
-  for(const id of ['f-region','f-origin','f-dest','f-from','f-to','f-combo-out','f-combo-in'])
-    document.getElementById(id).addEventListener('change', render);
+  for(const [,id] of URL_FIELDS)
+    document.getElementById(id).addEventListener('change', ()=>{ writeURL(); render(); });
+  document.getElementById('f-reset').addEventListener('click', ()=>{
+    for(const [,id] of URL_FIELDS) document.getElementById(id).value = '';
+    writeURL(); render();
+  });
   document.getElementById('f-combo-clear').addEventListener('click', ()=>{
     document.getElementById('f-combo-out').value = '';
     document.getElementById('f-combo-in').value = '';
-    render();
-  });
-  document.getElementById('f-reset').addEventListener('click', ()=>{
-    for(const id of ['f-region','f-origin','f-dest','f-from','f-to'])
-      document.getElementById(id).value = '';
-    render();
+    writeURL(); render();
   });
 }
 
-const TW_AIRPORTS = ['TPE','RMQ','TSA'];
+function buildAnalysisSelects(){
+  const dirs = [...new Set(DATA.latest.map(r=>r.o+'-'+r.d))].sort();
+  const rSel = document.getElementById('a-route');
+  const cSel = document.getElementById('a-compare');
+  for(const k of dirs){
+    const [o,d] = k.split('-');
+    rSel.add(new Option(`${o}→${d} ${zh(o)}→${zh(d)}`, k));
+    cSel.add(new Option(`${o}→${d} ${zh(o)}→${zh(d)}`, k));
+  }
+  rSel.addEventListener('change', ()=>{
+    selectedTrendRoute = rSel.value; writeURL(); render();
+  });
+  cSel.addEventListener('change', ()=>{
+    compareRoute = cSel.value; writeURL(); renderTrend();
+  });
+}
 
 function getFiltered(){
   const region = document.getElementById('f-region').value;
@@ -398,6 +591,8 @@ function render(){
   renderCI(rows);
   renderCombos();
   renderRoutes(rows);
+  syncAnalysisRoute();
+  renderHeatmap();
   renderTrend();
 }
 
@@ -421,10 +616,14 @@ function renderCI(rows){
     : '<div class="empty">目前篩選範圍內沒有華航報價</div>';
 }
 
-/* ---- 02 來回組合 ----
-   未指定日期：自動在 2–30 天內找每個機場對的最便宜組合
-   指定去程＋回程日期：精確顯示每個機場對在那兩天的票價加總
-   出發地區選「日本出發」時，組合方向翻轉為 日本→台灣→日本 */
+/* ---- 02 來回組合（前三名＋精確日期＋方向翻轉） ---- */
+function comboRow(c){
+  return `<div class="alt-row">
+    <span><a href="${bookURL(c.dep, c.arr, c.out.date)}" target="_blank" rel="noopener">去 ${c.out.date}</a>
+    ＋ <a href="${bookURL(c.arr, c.dep, c.back.date)}" target="_blank" rel="noopener">回 ${c.back.date}</a></span>
+    <span>${fmt(c.total)}（${c.days}天）</span>
+  </div>`;
+}
 function renderCombos(){
   const region = document.getElementById('f-region').value;
   const from = document.getElementById('f-from').value;
@@ -441,7 +640,6 @@ function renderCombos(){
     : '2–30 天行程・去回可分開點選查票';
 
   const grid = document.getElementById('combo-grid');
-
   if(exactMode && exactIn <= exactOut){
     grid.innerHTML = '<div class="empty">回程日期需在去程日期之後</div>';
     return;
@@ -465,39 +663,41 @@ function renderCombos(){
     pairs.add(tw + '|' + jp);
   }
 
-  const combos = [];
+  const results = [];
   for(const p of pairs){
     const [tw, jp] = p.split('|');
-    // 依出發地區決定去程方向
     const [depCity, arrCity] = jpDeparture ? [jp, tw] : [tw, jp];
     const outLegs = byDir.get(depCity + '-' + arrCity) || [];
     const inLegs = byDir.get(arrCity + '-' + depCity) || [];
 
-    let best = null;
+    let combos = [];
     if(exactMode){
       const a = outLegs.find(r => r.date === exactOut);
       const b = inLegs.find(r => r.date === exactIn);
       if(a && b){
         const days = (new Date(b.date) - new Date(a.date)) / 86400000;
-        best = {dep: depCity, arr: arrCity, out: a, back: b, total: a.price + b.price, days};
+        combos = [{dep: depCity, arr: arrCity, out: a, back: b, total: a.price + b.price, days}];
       }
     }else{
       for(const a of outLegs){
         for(const b of inLegs){
           const gap = (new Date(b.date) - new Date(a.date)) / 86400000;
           if(gap < MIN_TRIP_DAYS || gap > MAX_TRIP_DAYS) continue;
-          const total = a.price + b.price;
-          if(!best || total < best.total)
-            best = {dep: depCity, arr: arrCity, out: a, back: b, total, days: gap};
+          combos.push({dep: depCity, arr: arrCity, out: a, back: b, total: a.price + b.price, days: gap});
         }
       }
+      combos.sort((x,y)=>x.total-y.total);
+      combos = combos.slice(0, 3);
     }
-    if(best) combos.push(best);
+    if(combos.length) results.push(combos);
   }
-  combos.sort((a,b)=>a.total-b.total);
+  results.sort((a,b)=>a[0].total-b[0].total);
 
-  grid.innerHTML = combos.length ? combos.map(c=>`
-    <div class="card combo-card">
+  grid.innerHTML = results.length ? results.map((combos, idx)=>{
+    const c = combos[0];
+    const alts = combos.slice(1);
+    return `
+    <div class="card combo-card" id="combo-${idx}">
       <div class="route">${c.dep}<span class="arrow">⇄</span>${c.arr}</div>
       <div class="route-zh">${zh(c.dep)} ⇄ ${zh(c.arr)}</div>
       <div class="leg">
@@ -512,14 +712,42 @@ function renderCombos(){
         <span class="days">${c.days} 天行程</span>
         <span class="sum">${fmt(c.total)}</span>
       </div>
-    </div>`).join('')
-    : `<div class="empty">${exactMode
-        ? '指定的兩個日期查無同機場對的去回票價（該日期可能不在掃描範圍，或資料尚未涵蓋）'
-        : '目前篩選範圍內組不出 2–30 天的來回行程'}</div>`;
+      ${alts.length ? `<div class="combo-alt">${alts.map(comboRow).join('')}</div>
+      <button class="more-btn" type="button" data-target="combo-${idx}">更多組合</button>` : ''}
+    </div>`;
+  }).join('')
+  : `<div class="empty">${exactMode
+      ? '指定的兩個日期查無同機場對的去回票價（該日期可能不在掃描範圍，或資料尚未涵蓋）'
+      : '目前篩選範圍內組不出 2–30 天的來回行程'}</div>`;
+
+  grid.querySelectorAll('.more-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const card = document.getElementById(btn.dataset.target);
+      const on = card.classList.toggle('expanded');
+      btn.textContent = on ? '收起' : '更多組合';
+    });
+  });
 }
 
-/* ---- 03 單程總覽 ---- */
+/* ---- 03 單程總覽（含漲跌） ---- */
+function deltaMap(){
+  const map = new Map();
+  for(const [key, series] of Object.entries(DATA.history || {})){
+    if(series.length >= 2){
+      const last = series[series.length-1], prev = series[series.length-2];
+      if(last.min != null && prev.min != null) map.set(key, last.min - prev.min);
+    }
+  }
+  return map;
+}
+function deltaHTML(d){
+  if(d == null) return '';
+  if(d > 0) return `<span class="delta up">▲${fmt(d)}</span>`;
+  if(d < 0) return `<span class="delta down">▼${fmt(-d)}</span>`;
+  return `<span class="delta flat">—</span>`;
+}
 function renderRoutes(rows){
+  const deltas = deltaMap();
   const byRoute = new Map();
   for(const r of rows){
     const k = r.o + '-' + r.d;
@@ -531,12 +759,12 @@ function renderRoutes(rows){
     const k = r.o + '-' + r.d;
     return `
     <a class="card ${k===selectedTrendRoute?'selected':''}" href="${bookURL(r.o, r.d, r.date)}" target="_blank" rel="noopener">
-      <button class="trend-btn" type="button" data-route="${k}" title="查看趨勢" aria-label="查看 ${r.o} 到 ${r.d} 的價格趨勢">
+      <button class="trend-btn" type="button" data-route="${k}" title="查看分析" aria-label="查看 ${r.o} 到 ${r.d} 的價格分析">
         <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
       </button>
       <div class="route">${r.o}<span class="arrow">→</span>${r.d}</div>
       <div class="route-zh">${zh(r.o)} → ${zh(r.d)}</div>
-      <div class="price">${fmt(r.price)}<small>TWD 起</small></div>
+      <div class="price">${fmt(r.price)}<small>TWD 起</small>${deltaHTML(deltas.get(k))}</div>
       <div class="meta">${chipHTML(r.airline)} ${r.date}</div>
     </a>`;
   }).join('')
@@ -544,57 +772,119 @@ function renderRoutes(rows){
 
   grid.querySelectorAll('.trend-btn').forEach(btn=>{
     btn.addEventListener('click', e=>{
-      e.preventDefault(); e.stopPropagation();  // 不觸發卡片的購票連結
+      e.preventDefault(); e.stopPropagation();
       selectedTrendRoute = btn.dataset.route;
-      render();
-      document.querySelector('.chart-panel').scrollIntoView({behavior:'smooth'});
+      writeURL(); render();
+      document.querySelector('.analysis-panel').scrollIntoView({behavior:'smooth'});
     });
   });
 }
 
-/* ---- 04 趨勢圖 ---- */
+/* ---- 04 航線分析 ---- */
+function syncAnalysisRoute(){
+  const dirs = [...new Set(DATA.latest.map(r=>r.o+'-'+r.d))].sort();
+  if(!selectedTrendRoute || !dirs.includes(selectedTrendRoute)) selectedTrendRoute = dirs[0] || null;
+  if(selectedTrendRoute) document.getElementById('a-route').value = selectedTrendRoute;
+  document.getElementById('a-compare').value = compareRoute;
+  if(selectedTrendRoute){
+    const [o,d] = selectedTrendRoute.split('-');
+    document.getElementById('trend-route-label').textContent =
+      `${o} → ${d}（${zh(o)} → ${zh(d)}）`;
+  }
+}
+
+function renderHeatmap(){
+  const box = document.getElementById('heat-months');
+  if(!selectedTrendRoute){ box.innerHTML = ''; return; }
+  const [o,d] = selectedTrendRoute.split('-');
+  const rows = DATA.latest.filter(r => r.o === o && r.d === d);
+  if(!rows.length){ box.innerHTML = '<div class="empty">此航線沒有價格資料</div>'; return; }
+
+  const priceByDate = new Map(rows.map(r=>[r.date, r.price]));
+  const prices = rows.map(r=>r.price);
+  const min = Math.min(...prices), max = Math.max(...prices);
+  const dark = document.body.classList.contains('dark');
+  const rgb = dark ? '111,163,232' : '30,75,143';
+
+  // 依月份分組
+  const months = new Map();
+  for(const r of rows){
+    const m = r.date.slice(0,7);
+    if(!months.has(m)) months.set(m, []);
+    months.get(m).push(r);
+  }
+
+  let html = '';
+  for(const [m] of [...months.entries()].sort()){
+    const [y, mo] = m.split('-').map(Number);
+    const daysInMonth = new Date(y, mo, 0).getDate();
+    const firstWd = (new Date(y, mo-1, 1).getDay() + 6) % 7; // 週一起始
+    let cells = '<div class="wd">一</div><div class="wd">二</div><div class="wd">三</div><div class="wd">四</div><div class="wd">五</div><div class="wd">六</div><div class="wd">日</div>';
+    for(let i=0;i<firstWd;i++) cells += '<div class="cell blank"></div>';
+    for(let day=1; day<=daysInMonth; day++){
+      const ds = `${m}-${String(day).padStart(2,'0')}`;
+      const price = priceByDate.get(ds);
+      if(price == null){
+        cells += `<div class="cell">${day}</div>`;
+      }else{
+        const norm = max === min ? 0 : (price - min) / (max - min);
+        const alpha = 0.9 - norm * 0.72;   // 便宜=深、貴=淡
+        const textDark = !dark && alpha < 0.45;
+        cells += `<a class="cell has" href="${bookURL(o, d, ds)}" target="_blank" rel="noopener"
+          style="background:rgba(${rgb},${alpha.toFixed(2)});${textDark?'color:var(--text2);':''}"
+          title="${ds}：${fmt(price)} TWD">${day}<span class="p">${(price/1000).toFixed(1)}k</span></a>`;
+      }
+    }
+    html += `<div class="month"><h4>${y}/${String(mo).padStart(2,'0')}</h4><div class="cal">${cells}</div></div>`;
+  }
+  box.innerHTML = html;
+}
+
 function cssVar(name){
   return getComputedStyle(document.body).getPropertyValue(name).trim();
 }
 function renderTrend(){
   const hist = DATA.history || {};
-  const keys = Object.keys(hist);
-  if(!selectedTrendRoute || !hist[selectedTrendRoute]){
-    selectedTrendRoute = keys.find(k=>hist[k].length) || null;
-  }
-  const label = document.getElementById('trend-route-label');
   const ctx = document.getElementById('trend-chart');
-
-  if(!selectedTrendRoute){
-    label.textContent = '';
+  if(!selectedTrendRoute || !hist[selectedTrendRoute] || !hist[selectedTrendRoute].length){
     if(chart){ chart.destroy(); chart = null; }
     return;
   }
   const series = hist[selectedTrendRoute];
-  const [o,d] = selectedTrendRoute.split('-');
-  label.textContent = `${o} → ${d}（${zh(o)} → ${zh(d)}）`;
-
+  const labels = series.map(e=>e.c);
   const accent = cssVar('--accent');
   const dim = cssVar('--text3');
   const gridLine = cssVar('--grid-line');
   const textCol = cssVar('--text');
 
+  const datasets = [
+    { label:'全航班最低價', data: series.map(e=>e.min), borderColor: accent,
+      fill:false, tension:.3, pointRadius:3, pointBackgroundColor: accent },
+    { label:'華航最低價', data: series.map(e=>e.ci), borderColor:'#d02c3a',
+      borderDash:[6,4], fill:false, tension:.3, pointRadius:3,
+      pointBackgroundColor:'#d02c3a', spanGaps:true },
+    { label:`門檻 ${fmt(THRESHOLD_ALL)}`, data: labels.map(()=>THRESHOLD_ALL),
+      borderColor: dim, borderDash:[3,5], borderWidth:1.5, fill:false, pointRadius:0 },
+    { label:`華航門檻 ${fmt(THRESHOLD_CI)}`, data: labels.map(()=>THRESHOLD_CI),
+      borderColor:'rgba(208,44,58,.45)', borderDash:[3,5], borderWidth:1.5, fill:false, pointRadius:0 },
+  ];
+  if(compareRoute && hist[compareRoute] && compareRoute !== selectedTrendRoute){
+    const cmpByDate = new Map(hist[compareRoute].map(e=>[e.c, e.min]));
+    const [co,cd] = compareRoute.split('-');
+    datasets.push({ label:`比較：${co}→${cd}`, data: labels.map(l=>cmpByDate.get(l) ?? null),
+      borderColor:'#9a8f6f', borderDash:[8,4], fill:false, tension:.3,
+      pointRadius:2, pointBackgroundColor:'#9a8f6f', spanGaps:true });
+  }
+
   if(chart) chart.destroy();
   chart = new Chart(ctx, {
     type:'line',
-    data:{ labels: series.map(e=>e.c), datasets:[
-      { label:'全航班最低價', data: series.map(e=>e.min), borderColor: accent,
-        backgroundColor:'transparent', fill:false, tension:.3,
-        pointRadius:3, pointBackgroundColor: accent },
-      { label:'華航最低價', data: series.map(e=>e.ci), borderColor:'#d02c3a',
-        borderDash:[6,4], fill:false, tension:.3,
-        pointRadius:3, pointBackgroundColor:'#d02c3a', spanGaps:true }
-    ]},
+    data:{ labels, datasets },
     options:{
       responsive:true, maintainAspectRatio:false,
       interaction:{mode:'index', intersect:false},
       plugins:{
-        legend:{labels:{color:textCol, font:{family:"'Noto Sans TC'"}}},
+        legend:{labels:{color:textCol, font:{family:"'Noto Sans TC'"}, boxWidth:20}},
         tooltip:{callbacks:{label:c=>` ${c.dataset.label}：${c.parsed.y==null?'—':fmt(c.parsed.y)+' TWD'}`}}
       },
       scales:{
