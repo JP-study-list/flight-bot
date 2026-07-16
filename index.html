@@ -252,6 +252,58 @@
   #loading { padding: 60px 0; text-align: center; color: var(--text3); font-family: var(--mono); }
   footer { text-align: center; margin-top: 44px; font-size: 12px; color: var(--text3); }
   @media (max-width: 460px) { .grid { grid-template-columns: 1fr; } }
+
+  /* ---- 手機版：區塊手風琴 ---- */
+  .sec-head .chev { display: none; flex: none; color: var(--text3); transition: transform .2s; margin-left: 6px; align-self: center; }
+  @media (max-width: 820px) {
+    .collapsible .sec-head { cursor: pointer; user-select: none; }
+    .sec-head .chev { display: block; }
+    .collapsible.collapsed .sec-body { display: none; }
+    .collapsible.collapsed .chev { transform: rotate(-90deg); }
+    body { padding-bottom: 130px; }
+  }
+
+  /* ---- 手機版：地區快選鈕 ---- */
+  .region-quick { display: none; gap: 8px; margin-bottom: 8px; }
+  .region-quick button {
+    flex: 1; border: 1px solid var(--border); background: var(--surface);
+    color: var(--text2); border-radius: 99px; padding: 8px 0; font-size: 13.5px;
+    font-family: 'Noto Sans TC', sans-serif; cursor: pointer;
+  }
+  .region-quick button.active { border-color: var(--accent); color: var(--accent); font-weight: 600; background: var(--accent-soft); }
+  @media (max-width: 820px) { .region-quick { display: flex; } }
+
+  /* ---- 手機版：底部快速導覽 ---- */
+  .bottom-nav {
+    display: none; position: fixed; left: 0; right: 0; bottom: 0; z-index: 60;
+    background: var(--surface); border-top: 1px solid var(--border);
+    padding: 6px 8px calc(6px + env(safe-area-inset-bottom));
+  }
+  .bottom-nav button {
+    flex: 1; background: none; border: none; color: var(--text2);
+    font-size: 12.5px; font-family: 'Noto Sans TC', sans-serif; cursor: pointer;
+    padding: 7px 0; border-radius: 10px;
+  }
+  .bottom-nav button:active { background: var(--accent-soft); color: var(--accent); }
+  @media (max-width: 820px) { .bottom-nav { display: flex; } }
+
+  /* ---- 手機版：卡片瘦身 ---- */
+  @media (max-width: 640px) {
+    #route-grid, #ci-grid { grid-template-columns: 1fr; }
+    #route-grid .card, #ci-grid .card {
+      display: grid; grid-template-columns: 1fr auto; align-items: center;
+      column-gap: 10px; padding: 12px 14px;
+    }
+    #route-grid .route-zh, #ci-grid .route-zh { display: none; }
+    #route-grid .price, #ci-grid .price {
+      grid-column: 2; justify-self: end; margin-top: 0; font-size: 19px;
+    }
+    #route-grid .meta, #ci-grid .meta { grid-column: 1 / -1; margin-top: 4px; }
+    #route-grid .trend-btn { display: none; }
+    #ci-grid .badge { grid-column: 1 / -1; margin-bottom: 2px; }
+    .combo-card { padding: 13px 14px; }
+  }
+
 </style>
 </head>
 <body>
@@ -309,8 +361,13 @@
   <div id="app" hidden>
 
     <div class="filter-wrap" id="filter-wrap">
+      <div class="region-quick" id="region-quick">
+        <button type="button" data-rg="" class="active">全部</button>
+        <button type="button" data-rg="TW">台灣出發</button>
+        <button type="button" data-rg="JP">日本出發</button>
+      </div>
       <button class="filter-toggle" id="filter-toggle" type="button">
-        <span>篩選條件</span>
+        <span>更多篩選</span>
         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
       </button>
       <div class="filters">
@@ -342,19 +399,24 @@
       </div>
     </div>
 
-    <section>
-      <div class="sec-head">
+    <section class="collapsible" id="sec-ci">
+      <div class="sec-head" role="button" tabindex="0">
         <span class="sec-num">01</span><h2>華航專區</h2>
         <span class="sec-note">各航線華航最低價・點卡片查票</span>
+        <svg class="chev" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
       </div>
-      <div class="grid" id="ci-grid"></div>
+      <div class="sec-body">
+        <div class="grid" id="ci-grid"></div>
+      </div>
     </section>
 
-    <section>
-      <div class="sec-head">
+    <section class="collapsible" id="sec-combo">
+      <div class="sec-head" role="button" tabindex="0">
         <span class="sec-num">02</span><h2>最便宜來回組合</h2>
         <span class="sec-note" id="combo-note">2–30 天行程・去回可分開點選查票</span>
+        <svg class="chev" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
       </div>
+      <div class="sec-body">
       <div class="combo-datebar">
         <div>
           <label for="f-combo-out">指定去程日期</label>
@@ -367,21 +429,27 @@
         <div class="reset"><button id="f-combo-clear" type="button">清除日期</button></div>
       </div>
       <div class="grid" id="combo-grid"></div>
+      </div>
     </section>
 
-    <section>
-      <div class="sec-head">
+    <section class="collapsible" id="sec-routes">
+      <div class="sec-head" role="button" tabindex="0">
         <span class="sec-num">03</span><h2>單程最低價總覽</h2>
         <span class="sec-note">▲▼ 為與前一次掃描相比・點卡片查票</span>
+        <svg class="chev" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
       </div>
-      <div class="grid" id="route-grid"></div>
+      <div class="sec-body">
+        <div class="grid" id="route-grid"></div>
+      </div>
     </section>
 
-    <section>
-      <div class="sec-head">
+    <section class="collapsible" id="sec-analysis">
+      <div class="sec-head" role="button" tabindex="0">
         <span class="sec-num">04</span><h2>航線分析</h2>
         <span class="sec-note" id="trend-route-label"></span>
+        <svg class="chev" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
       </div>
+      <div class="sec-body">
       <div class="analysis-panel">
         <div class="analysis-controls">
           <div>
@@ -401,12 +469,20 @@
         <div class="hint">價格趨勢：每日掃描的最低價變化，虛線為通知門檻</div>
         <div class="chart-box"><canvas id="trend-chart"></canvas></div>
       </div>
+      </div>
     </section>
 
   </div>
 
   <footer>每天自動更新一次</footer>
 </div>
+
+<nav class="bottom-nav" id="bottom-nav" aria-label="快速導覽">
+  <button type="button" data-target="sec-ci">華航</button>
+  <button type="button" data-target="sec-combo">組合</button>
+  <button type="button" data-target="sec-routes">總覽</button>
+  <button type="button" data-target="sec-analysis">分析</button>
+</nav>
 
 <script>
 const AIRPORT_ZH = {
@@ -490,6 +566,38 @@ function writeURL(){
   history.replaceState(null, '', qs ? '?' + qs : location.pathname);
 }
 
+/* ---- 手機版 UI ---- */
+const isMobile = () => window.matchMedia('(max-width: 820px)').matches;
+function setupMobileUI(){
+  if(isMobile()){
+    document.getElementById('sec-ci').classList.add('collapsed');
+    document.getElementById('sec-analysis').classList.add('collapsed');
+  }
+  document.querySelectorAll('.collapsible .sec-head').forEach(h=>{
+    const toggle = ()=>{ if(isMobile()) h.parentElement.classList.toggle('collapsed'); };
+    h.addEventListener('click', toggle);
+    h.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); toggle(); } });
+  });
+  document.querySelectorAll('#region-quick button').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      document.getElementById('f-region').value = b.dataset.rg;
+      writeURL(); render();
+    });
+  });
+  document.querySelectorAll('#bottom-nav button').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      const sec = document.getElementById(b.dataset.target);
+      sec.classList.remove('collapsed');
+      sec.scrollIntoView({behavior:'smooth'});
+    });
+  });
+}
+function syncRegionQuick(){
+  const v = document.getElementById('f-region').value;
+  document.querySelectorAll('#region-quick button').forEach(b=>
+    b.classList.toggle('active', b.dataset.rg === v));
+}
+
 /* ---- 初始化 ---- */
 async function init(){
   try{
@@ -506,6 +614,7 @@ async function init(){
 
   fillDrawer();
   checkStale();
+  setupMobileUI();
   buildFilters();
   buildAnalysisSelects();
   readURL();
@@ -587,6 +696,7 @@ function getFiltered(){
 }
 
 function render(){
+  syncRegionQuick();
   const rows = getFiltered();
   renderCI(rows);
   renderCombos();
