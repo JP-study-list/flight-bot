@@ -106,6 +106,12 @@
     font-family: 'Noto Sans TC', sans-serif;
   }
   .filters input[type=date] { font-family: var(--mono); font-size: 13px; }
+  /* iOS Safari 日期欄修正：空值塌陷與內容偏移 */
+  input[type=date] {
+    -webkit-appearance: none; appearance: none;
+    min-height: 40px; display: flex; align-items: center;
+  }
+  input[type=date]::-webkit-date-and-time-value { text-align: left; margin: 0; }
   .filters .reset { align-self: end; }
   .reset button, .more-btn {
     background: none; border: 1px solid var(--border); color: var(--text2);
@@ -178,7 +184,11 @@
     font-family: var(--mono); font-size: 13px;
   }
   .combo-datebar .reset { align-self: end; }
-  @media (max-width: 640px) { .combo-datebar { grid-template-columns: 1fr 1fr; max-width: none; } }
+  @media (max-width: 640px) {
+    .combo-datebar { grid-template-columns: 1fr 1fr; max-width: none; }
+    .combo-datebar .reset { grid-column: 1 / -1; }
+    .combo-datebar .reset button { width: 100%; }
+  }
   .combo-card .leg {
     display: flex; justify-content: space-between; align-items: center;
     font-family: var(--mono); font-size: 13px; margin-top: 8px; gap: 8px;
@@ -256,7 +266,18 @@
   /* ---- 手機版：區塊手風琴 ---- */
   .sec-head .chev { display: none; flex: none; color: var(--text3); transition: transform .2s; margin-left: 6px; align-self: center; }
   @media (max-width: 820px) {
-    .collapsible .sec-head { cursor: pointer; user-select: none; }
+    .collapsible .sec-head {
+      cursor: pointer; user-select: none;
+      display: grid; grid-template-columns: auto 1fr auto; column-gap: 10px;
+      align-items: center;
+    }
+    .collapsible .sec-head .sec-num { grid-column: 1; }
+    .collapsible .sec-head h2 { grid-column: 2; }
+    .collapsible .sec-head .chev { grid-column: 3; margin-left: 0; }
+    .collapsible .sec-head .sec-note {
+      grid-column: 1 / -1; grid-row: 2; margin-left: 0; text-align: left;
+      font-size: 11.5px;
+    }
     .sec-head .chev { display: block; }
     .collapsible.collapsed .sec-body { display: none; }
     .collapsible.collapsed .chev { transform: rotate(-90deg); }
@@ -969,21 +990,21 @@ function renderTrend(){
 
   const datasets = [
     { label:'全航班最低價', data: series.map(e=>e.min), borderColor: accent,
-      fill:false, tension:.3, pointRadius:3, pointBackgroundColor: accent },
+      fill:false, tension:.3, pointRadius:2, pointHoverRadius:5, pointBackgroundColor: accent },
     { label:'華航最低價', data: series.map(e=>e.ci), borderColor:'#d02c3a',
-      borderDash:[6,4], fill:false, tension:.3, pointRadius:3,
+      borderDash:[6,4], fill:false, tension:.3, pointRadius:2, pointHoverRadius:5,
       pointBackgroundColor:'#d02c3a', spanGaps:true },
-    { label:`門檻 ${fmt(THRESHOLD_ALL)}`, data: labels.map(()=>THRESHOLD_ALL),
-      borderColor: dim, borderDash:[3,5], borderWidth:1.5, fill:false, pointRadius:0 },
-    { label:`華航門檻 ${fmt(THRESHOLD_CI)}`, data: labels.map(()=>THRESHOLD_CI),
-      borderColor:'rgba(208,44,58,.45)', borderDash:[3,5], borderWidth:1.5, fill:false, pointRadius:0 },
+    { label:`門檻 ${fmt(THRESHOLD_ALL)}`, data: labels.map(()=>THRESHOLD_ALL), isThreshold:true,
+      borderColor: dim, borderDash:[3,5], borderWidth:1, fill:false, pointRadius:0 },
+    { label:`華航門檻 ${fmt(THRESHOLD_CI)}`, data: labels.map(()=>THRESHOLD_CI), isThreshold:true,
+      borderColor:'rgba(208,44,58,.4)', borderDash:[3,5], borderWidth:1, fill:false, pointRadius:0 },
   ];
   if(compareRoute && hist[compareRoute] && compareRoute !== selectedTrendRoute){
     const cmpByDate = new Map(hist[compareRoute].map(e=>[e.c, e.min]));
     const [co,cd] = compareRoute.split('-');
     datasets.push({ label:`比較：${co}→${cd}`, data: labels.map(l=>cmpByDate.get(l) ?? null),
       borderColor:'#9a8f6f', borderDash:[8,4], fill:false, tension:.3,
-      pointRadius:2, pointBackgroundColor:'#9a8f6f', spanGaps:true });
+      pointRadius:2, pointHoverRadius:5, pointBackgroundColor:'#9a8f6f', spanGaps:true });
   }
 
   if(chart) chart.destroy();
@@ -994,8 +1015,14 @@ function renderTrend(){
       responsive:true, maintainAspectRatio:false,
       interaction:{mode:'index', intersect:false},
       plugins:{
-        legend:{labels:{color:textCol, font:{family:"'Noto Sans TC'"}, boxWidth:20}},
-        tooltip:{callbacks:{label:c=>` ${c.dataset.label}：${c.parsed.y==null?'—':fmt(c.parsed.y)+' TWD'}`}}
+        legend:{labels:{
+          color:textCol, font:{family:"'Noto Sans TC'", size:12}, boxWidth:16, boxHeight:2,
+          filter:(item, data)=>!data.datasets[item.datasetIndex].isThreshold
+        }},
+        tooltip:{
+          filter: c=>!c.dataset.isThreshold,
+          callbacks:{label:c=>` ${c.dataset.label}：${c.parsed.y==null?'—':fmt(c.parsed.y)+' TWD'}`}
+        }
       },
       scales:{
         x:{ticks:{color:dim, font:{family:"'IBM Plex Mono'", size:11}}, grid:{color:gridLine}},
