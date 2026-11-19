@@ -62,10 +62,11 @@
 
 ## 之後如何運作
 
-- 每天台灣時間早上 9 點會自動執行一次（可在 `monitor.yml` 裡改 cron 時間）
+- 每天自動執行一次（`monitor.yml` 寫台灣時間 08:43，GitHub 常延後幾個小時才跑）
 - 程式會把每天查到的價格記錄在 `data/price_history.json`，並自動 commit 回你的 repo，累積歷史資料
-- 累積到 5 筆以上歷史紀錄後，會同時用「絕對門檻」和「比歷史均價便宜 25% 以上」兩種邏輯判斷是否為好價格
-- 只有真的判斷為便宜時，才會發 LINE 通知，平常不會每天吵你
+- 第一輪查不到的日期，最後放慢再查一次；重查後仍有超過一半查不到，通知裡會說價格可能不準
+- 好價：比該航線最近 30 天每日最低價的中位數便宜 15% 以上（要先累積 7 天），或華航單程低於 5,500。
+  同一條航線通知過、價格沒再降就不重發，平常不會每天吵你
 
 ---
 
@@ -73,16 +74,14 @@
 
 | 設定 | 說明 |
 |---|---|
-| `ORIGINS` | 台灣出發機場，預設 `["TPE", "RMQ"]`，可加 `"KHH"`(高雄)、`"TSA"`(松山) |
-| `DESTINATIONS` | 日本目的地機場，預設含東京(NRT/HND)、大阪(KIX)、福岡(FUK)、仙台(SDJ)、札幌(CTS) |
-| `TRIP_LENGTH_DAYS` | 去程回程間隔天數 |
-| `LOOKAHEAD_WEEKS` | 往後掃描幾週的週五出發航班 |
-| `ABSOLUTE_PRICE_THRESHOLD` | 全網最便宜航班的絕對門檻（第一次執行後依實際幣別調整） |
-| `THRESHOLD_PERCENT` | 全網最便宜航班相對歷史均價的便宜比例 |
-| `MIN_HISTORY_POINTS` | 至少要幾筆歷史資料才啟用「相對比較」 |
+| `CITY_PAIRS` | 監控的城市對（台灣機場, 日本機場），每一對雙向都查 |
+| `LOOKAHEAD_WEEKS`、`WEEKDAYS` | 往後掃描幾週、哪幾個星期幾出發 |
+| `ONEWAY_PRICE_THRESHOLD` | 全航空公司的絕對門檻；`None` = 不用（2026-11-19 起） |
+| `THRESHOLD_PERCENT`、`RELATIVE_WINDOW` | 比最近幾天的一般價（中位數）便宜多少才算好價 |
+| `MIN_HISTORY_POINTS` | 至少要幾天紀錄才啟用「相對比較」 |
 | `CI_NAME_KEYWORDS` | 辨識華航航班的關鍵字 |
-| `CI_ABSOLUTE_PRICE_THRESHOLD` | 華航自己的絕對門檻，可跟整體門檻不同 |
-| `CI_THRESHOLD_PERCENT` | 華航自己相對歷史均價的便宜比例，可設寬鬆一點 |
+| `CI_ONEWAY_PRICE_THRESHOLD`、`CI_THRESHOLD_PERCENT` | 華航自己的門檻，可跟整體不同 |
+| `COMBO_DEPART` | 通知裡的來回組合從哪邊出發：`"JP"` 日本、`"TW"` 台灣 |
 
 改完直接在 GitHub 網頁上編輯、commit 即可生效，不需要重新部署。
 

@@ -1,7 +1,7 @@
 """
 機票低價監控機器人（單程版）
 - 雙向監控 config.CITY_PAIRS 的單程票（台→日、日→台）
-- 單程低於門檻或明顯低於歷史均價時，透過 LINE / Discord 推播
+- 單程明顯低於該航線最近的一般價時，透過 LINE / Discord 推播（通知過、沒再降就不重發）
 - 自動組合每個城市對「最便宜去程＋回程」（間隔 <= MAX_TRIP_DAYS 天）
 - 查價結果寫入 data/price_history.json，供 GitHub Pages 儀表板讀取
 """
@@ -11,12 +11,18 @@ import time
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
-from fast_flights import FlightQuery, Passengers, create_query, get_flights
+from fast_flights import FlightQuery, Passengers, create_query
+from fast_flights.fetcher import fetch_flights_html
+from selectolax.lexbor import LexborHTMLParser
 
 import config
 from notifiers import notify
 
 DATA_FILE = Path(__file__).parent.parent / "data" / "price_history.json"
+
+# 歷史紀錄的算法版本。2 = 2026-11-19 起連 Google「推薦航班」那段一起讀，
+# 價格比之前低，相對門檻只跟同一版的紀錄比
+DATA_VERSION = 2
 
 
 # ---------- 資料存取 ----------
@@ -64,7 +70,12 @@ def directional_routes():
     return routes
 
 
+class QueryFailed(Exception):
+    pass
+
+
 def search_oneway(origin, destination, depart_date):
+    """查一天的單程票，回傳 [(航空公司名稱, 價格), ...]；查詢失敗回傳 None"""
     try:
         query = create_query(
             flights=[FlightQuery(date=depart_date, from_airport=origin, to_airport=destination)],
@@ -73,28 +84,39 @@ def search_oneway(origin, destination, depart_date):
             passengers=Passengers(adults=1),
             currency="TWD",
         )
-        return get_flights(query)
+        return extract_all_prices(fetch_flights_html(query))
     except Exception as e:
         print(f"[warn] 查詢失敗 {origin}->{destination} {depart_date}: {e}")
         return None
 
 
-def extract_all_prices(result):
-    """回傳 (航空公司名稱, 價格) 清單。
-    新版 fast-flights 的結果本身就是清單，每項有 .price（數字）與 .airlines（清單）"""
-    if not result:
-        return []
+def extract_all_prices(html):
+    """從 Google 機票頁面取出 (航空公司名稱, 價格) 清單。
+    Google 把結果分成上面的「推薦航班」（payload[2]）和下面的「其他航班」（payload[3]），
+    最便宜的常在上面那段；fast-flights 3.1.0 只讀下面那段，所以這裡自己讀兩段。
+    單一航班缺欄位就跳過那一班，不讓整天的查詢失敗。"""
+    script = LexborHTMLParser(html).css_first(r"script.ds\:1")
+    if script is None:
+        raise QueryFailed("頁面裡沒有航班資料")
+    data = script.text().split("data:", 1)[1].rsplit(",", 1)[0]
+    if data.endswith("errorHasStatus: true"):
+        raise QueryFailed("no flights found; received error")
+    payload = json.loads(data)
+
     flights = []
-    for f in result:
-        airlines = getattr(f, "airlines", None) or ["Unknown"]
-        name = " / ".join(airlines)
+    for section in (2, 3):
         try:
-            price = float(f.price)
-        except (TypeError, ValueError):
+            items = payload[section][0] or []
+        except (IndexError, TypeError):
             continue
-        if price <= 0:
-            continue
-        flights.append((name, price))
+        for item in items:
+            try:
+                name = " / ".join(item[0][1] or ["Unknown"])
+                price = float(item[1][0][1])
+            except (IndexError, TypeError, ValueError):
+                continue
+            if price > 0:
+                flights.append((name, price))
     return flights
 
 
@@ -108,31 +130,47 @@ def route_key(origin, destination):
     return f"{origin}-{destination}"
 
 
+def recent_typical(past, field):
+    """該航線最近 RELATIVE_WINDOW 天（同一版算法）每日最低價的中位數；筆數不夠回傳 None"""
+    values = [e[field] for e in past
+              if e.get("v") == DATA_VERSION and e.get(field) is not None]
+    values = values[-config.RELATIVE_WINDOW:]
+    if len(values) < config.MIN_HISTORY_POINTS:
+        return None
+    return statistics.median(values)
+
+
+def deal_reason(price, past, field, absolute, percent, label):
+    if price is None:
+        return None
+    if absolute and price <= absolute:
+        return f"低於{label}門檻 {absolute}"
+    typical = recent_typical(past, field)
+    if typical and price <= typical * percent:
+        return f"比{label}最近一般價 {typical:.0f} 便宜 {(1 - price / typical) * 100:.0f}%"
+    return None
+
+
 def evaluate_route(history, key, best_price, best_ci):
     """以「該航線的每日最低價歷史」判斷今天的最低價是否為好價"""
     past = history.get(key, [])
-    past_min = [e["min"] for e in past if e.get("min") is not None]
-    past_ci = [e["ci"] for e in past if e.get("ci") is not None]
-
-    overall_reason = None
-    if best_price is not None:
-        if best_price <= config.ONEWAY_PRICE_THRESHOLD:
-            overall_reason = f"低於單程門檻 {config.ONEWAY_PRICE_THRESHOLD}"
-        elif len(past_min) >= config.MIN_HISTORY_POINTS:
-            avg = statistics.mean(past_min)
-            if best_price <= avg * config.THRESHOLD_PERCENT:
-                overall_reason = f"比歷史均價 {avg:.0f} 便宜超過 {(1 - config.THRESHOLD_PERCENT) * 100:.0f}%"
-
-    ci_reason = None
-    if best_ci is not None:
-        if best_ci <= config.CI_ONEWAY_PRICE_THRESHOLD:
-            ci_reason = f"低於華航單程門檻 {config.CI_ONEWAY_PRICE_THRESHOLD}"
-        elif len(past_ci) >= config.MIN_HISTORY_POINTS:
-            avg_ci = statistics.mean(past_ci)
-            if best_ci <= avg_ci * config.CI_THRESHOLD_PERCENT:
-                ci_reason = f"比華航歷史均價 {avg_ci:.0f} 便宜超過 {(1 - config.CI_THRESHOLD_PERCENT) * 100:.0f}%"
-
+    overall_reason = deal_reason(best_price, past, "min", config.ONEWAY_PRICE_THRESHOLD,
+                                 config.THRESHOLD_PERCENT, "")
+    ci_reason = deal_reason(best_ci, past, "ci", config.CI_ONEWAY_PRICE_THRESHOLD,
+                            config.CI_THRESHOLD_PERCENT, "華航")
     return overall_reason, ci_reason
+
+
+def not_repeated(alerted, tag, reason, price):
+    """同一條航線通知過、價格沒有更低就不再發；不再是好價時清掉紀錄，下次便宜再發"""
+    if not reason:
+        alerted.pop(tag, None)
+        return None
+    last = alerted.get(tag)
+    if last is not None and price >= last:
+        return None
+    alerted[tag] = price
+    return reason
 
 
 def best_combo(outbound, inbound):
@@ -165,12 +203,38 @@ def main():
     # results[(origin, dest)] = list of {date, price, airline, ci}
     results = {}
 
-    for origin, destination in directional_routes():
+    # found[(origin, dest)][date] = [(航空公司名稱, 價格), ...]
+    routes = directional_routes()
+    found = {route: {} for route in routes}
+    failed = []
+    for origin, destination in routes:
+        for depart_date in dates:
+            flights = search_oneway(origin, destination, depart_date)
+            time.sleep(config.QUERY_DELAY_SECONDS)
+            if flights is None:
+                failed.append((origin, destination, depart_date))
+            elif flights:
+                found[(origin, destination)][depart_date] = flights
+
+    # 第一輪查不到的，最後放慢再查一次
+    total_queries = len(routes) * len(dates)
+    still_failed = 0
+    if failed:
+        print(f"[info] 第一輪查不到 {len(failed)}／{total_queries} 次，放慢再查一次")
+        for origin, destination, depart_date in failed:
+            flights = search_oneway(origin, destination, depart_date)
+            time.sleep(config.RETRY_DELAY_SECONDS)
+            if flights is None:
+                still_failed += 1
+            elif flights:
+                found[(origin, destination)][depart_date] = flights
+    fail_rate = still_failed / total_queries if total_queries else 0
+    print(f"[info] 重查後仍查不到 {still_failed}／{total_queries} 次（{fail_rate:.0%}）")
+
+    for origin, destination in routes:
         route_results = []
         for depart_date in dates:
-            result = search_oneway(origin, destination, depart_date)
-            time.sleep(config.QUERY_DELAY_SECONDS)
-            flights = extract_all_prices(result)
+            flights = found[(origin, destination)].get(depart_date)
             if not flights:
                 continue
             cheapest_airline, cheapest_price = min(flights, key=lambda x: x[1])
@@ -190,6 +254,7 @@ def main():
 
     # ---- 更新歷史（每航線每日最低價，供趨勢圖） ----
     deals = []
+    alerted = data.setdefault("alerted", {})
     for (origin, destination), route_results in results.items():
         key = route_key(origin, destination)
         if not route_results:
@@ -201,9 +266,12 @@ def main():
         best_ci = best_ci_entry["ci"] if best_ci_entry else None
 
         overall_reason, ci_reason = evaluate_route(history, key, best["price"], best_ci)
+        overall_reason = not_repeated(alerted, key, overall_reason, best["price"])
+        ci_reason = not_repeated(alerted, key + "|ci", ci_reason, best_ci)
 
         history.setdefault(key, []).append(
-            {"c": today_str, "min": best["price"], "ci": best_ci, "al": best["airline"]}
+            {"c": today_str, "min": best["price"], "ci": best_ci, "al": best["airline"],
+             "v": DATA_VERSION}
         )
         history[key] = history[key][-config.HISTORY_KEEP_DAYS:]
 
@@ -214,14 +282,16 @@ def main():
                  "overall_reason": overall_reason, "ci_reason": ci_reason}
             )
 
-    # ---- 來回組合（每個城市對） ----
+    # ---- 來回組合（每個城市對，從 COMBO_DEPART 那邊出發） ----
+    jp_depart = config.COMBO_DEPART == "JP"
     combos = []
     for tw, jp in config.CITY_PAIRS:
-        outbound = [(r["date"], r["price"]) for r in results.get((tw, jp), [])]
-        inbound = [(r["date"], r["price"]) for r in results.get((jp, tw), [])]
+        home, away = (jp, tw) if jp_depart else (tw, jp)
+        outbound = [(r["date"], r["price"]) for r in results.get((home, away), [])]
+        inbound = [(r["date"], r["price"]) for r in results.get((away, home), [])]
         combo = best_combo(outbound, inbound)
         if combo:
-            combos.append({"tw": tw, "jp": jp, **combo})
+            combos.append({"home": home, "away": away, **combo})
 
     # ---- 寫入資料檔（供儀表板） ----
     latest = []
@@ -232,10 +302,18 @@ def main():
     data["updated_at"] = datetime.now(timezone.utc).isoformat(timespec="seconds")
     data["latest"] = latest
     data["history"] = history
+    prev_fail_rate = data.get("fail_rate") or 0
+    data["fail_rate"] = round(fail_rate, 3)
     save_data(data)
     print(f"[info] 已寫入 {len(latest)} 筆最新價格")
 
     # ---- 通知 ----
+    dashboard = config.DASHBOARD_URL + ("?rg=JP" if jp_depart else "")
+    fail_line = None
+    if fail_rate > config.FAIL_ALERT_RATE:
+        fail_line = (f"注意：今天有 {fail_rate:.0%} 的日期查不到價格，"
+                     "價格和好價判斷可能不準")
+
     if deals:
         lines = ["✈️ 機票低價提醒（單程）\n"]
 
@@ -258,18 +336,27 @@ def main():
             lines.append("")
 
         if combos:
-            lines.append(f"▼ 最便宜來回組合（{config.MIN_TRIP_DAYS}–{config.MAX_TRIP_DAYS} 天）")
+            depart_label = "日本出發" if jp_depart else "台灣出發"
+            lines.append(f"▼ 最便宜來回組合（{depart_label}，"
+                         f"{config.MIN_TRIP_DAYS}–{config.MAX_TRIP_DAYS} 天）")
             for c in sorted(combos, key=lambda x: x["total"]):
-                lines.append(f"{c['tw']}↔{c['jp']}：去 {c['out_date']} {c['out_price']:.0f}"
+                lines.append(f"{c['home']}↔{c['away']}：去 {c['out_date']} {c['out_price']:.0f}"
                              f" + 回 {c['in_date']} {c['in_price']:.0f}"
                              f" ＝ {c['total']:.0f}（{c['days']} 天）")
             lines.append("")
 
-        lines.append(f"📊 完整資料與趨勢：{config.DASHBOARD_URL}")
+        if fail_line:
+            lines.append(fail_line)
+            lines.append("")
+
+        lines.append(f"📊 完整資料與趨勢：{dashboard}")
 
         notify("\n".join(lines))
     else:
         print("[info] 今天沒有找到符合條件的低價")
+        # 沒有好價時平常不發；查不到的比例剛超過門檻那天發一次，免得壞掉沒人知道
+        if fail_line and prev_fail_rate <= config.FAIL_ALERT_RATE:
+            notify(f"機票 Bot：{fail_line}\n\n{dashboard}")
 
 
 if __name__ == "__main__":
