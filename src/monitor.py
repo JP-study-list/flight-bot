@@ -20,9 +20,10 @@ from notifiers import notify
 
 DATA_FILE = Path(__file__).parent.parent / "data" / "price_history.json"
 
-# 歷史紀錄的算法版本。2 = 2026-11-19 起連 Google「推薦航班」那段一起讀，
-# 價格比之前低，相對門檻只跟同一版的紀錄比
-DATA_VERSION = 2
+# 歷史紀錄的算法版本，相對門檻只跟同一版的紀錄比。
+# 2 = 2026-11-19 起連 Google「推薦航班」那段一起讀（價格比之前低）
+# 3 = 2026-11-19 起只看直飛（NONSTOP_ONLY，價格比含轉機的高）
+DATA_VERSION = 3 if config.NONSTOP_ONLY else 2
 
 
 # ---------- 資料存取 ----------
@@ -78,7 +79,8 @@ def search_oneway(origin, destination, depart_date):
     """查一天的單程票，回傳 [(航空公司名稱, 價格), ...]；查詢失敗回傳 None"""
     try:
         query = create_query(
-            flights=[FlightQuery(date=depart_date, from_airport=origin, to_airport=destination)],
+            flights=[FlightQuery(date=depart_date, from_airport=origin, to_airport=destination,
+                                 max_stops=0 if config.NONSTOP_ONLY else None)],
             trip="one-way",
             seat="economy",
             passengers=Passengers(adults=1),
@@ -113,7 +115,10 @@ def extract_all_prices(html):
             try:
                 name = " / ".join(item[0][1] or ["Unknown"])
                 price = float(item[1][0][1])
+                legs = len(item[0][2])
             except (IndexError, TypeError, ValueError):
+                continue
+            if config.NONSTOP_ONLY and legs > 1:   # 查詢已經限直飛，這裡再擋一次
                 continue
             if price > 0:
                 flights.append((name, price))

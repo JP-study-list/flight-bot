@@ -75,6 +75,7 @@
 | 設定 | 說明 |
 |---|---|
 | `CITY_PAIRS` | 監控的城市對（台灣機場, 日本機場），每一對雙向都查 |
+| `NONSTOP_ONLY` | `True` = 只看直飛（2026-11-19 起）；`False` = 轉機也算 |
 | `LOOKAHEAD_WEEKS`、`WEEKDAYS` | 往後掃描幾週、哪幾個星期幾出發 |
 | `ONEWAY_PRICE_THRESHOLD` | 全航空公司的絕對門檻；`None` = 不用（2026-11-19 起） |
 | `THRESHOLD_PERCENT`、`RELATIVE_WINDOW` | 比最近幾天的一般價（中位數）便宜多少才算好價 |
