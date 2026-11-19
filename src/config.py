@@ -67,6 +67,35 @@ MAX_TRIP_DAYS = 30
 # 儀表板的「組合」也會跟著打開這一邊（頁面上的「台灣出發／日本出發」按鈕隨時可以換）
 COMBO_DEPART = "JP"
 
+# 好價通知裡附的官網首頁（Google 給的航空公司名稱 → 官網）。轉機的用第一段的航空公司；
+# 沒列到的就不附。2026-11-19 網址都確認過存在（有些官網擋程式，瀏覽器開是正常的）
+AIRLINE_SITES = {
+    "China Airlines": "https://www.china-airlines.com/",
+    "EVA Air": "https://www.evaair.com/",
+    "STARLUX Airlines": "https://www.starlux-airlines.com/",
+    "Tigerair Taiwan": "https://www.tigerairtw.com/",
+    "Peach Aviation": "https://www.flypeach.com/",
+    "Jetstar": "https://www.jetstar.com/",
+    "Scoot": "https://www.flyscoot.com/",
+    "Hong Kong Express": "https://www.hkexpress.com/",
+    "Greater Bay Airlines": "https://www.greaterbay-airlines.com/",
+    "Cathay Pacific": "https://www.cathaypacific.com/",
+    "JAL": "https://www.jal.co.jp/",
+    "ANA": "https://www.ana.co.jp/",
+    "Jin Air": "https://www.jinair.com/",
+    "Jeju Air": "https://www.jejuair.net/",
+    "T'Way Air": "https://www.trinityairways.com/",
+    "Trinity Airways": "https://www.trinityairways.com/",   # 德威航空改名
+    "Asiana Airlines": "https://flyasiana.com/",
+    "Korean Air": "https://www.koreanair.com/",
+    "AirAsia": "https://www.airasia.com/",
+    "Thai Lion Air": "https://www.lionairthai.com/",
+    "Thai Vietjet Air": "https://www.vietjetair.com/",
+    "Philippine Airlines": "https://www.philippineairlines.com/",
+    "Cebu Pacific": "https://www.cebupacificair.com/",
+    "China Southern": "https://www.csair.com/",
+}
+
 # 儀表板網址（附在每則通知結尾）
 DASHBOARD_URL = "https://JP-study-list.github.io/flight-bot/"
 

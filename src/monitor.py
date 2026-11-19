@@ -124,6 +124,11 @@ def is_china_airlines(name):
     return any(keyword in name for keyword in config.CI_NAME_KEYWORDS)
 
 
+def official_site(name):
+    """航空公司官網首頁；轉機（「A / B」）用第一段的，沒列到回傳 None"""
+    return config.AIRLINE_SITES.get(name.split(" / ")[0].strip())
+
+
 # ---------- 判斷邏輯 ----------
 
 def route_key(origin, destination):
@@ -324,6 +329,7 @@ def main():
                 e = d["best_ci_entry"]
                 lines.append(f"{d['origin']}→{d['destination']} {e['date']}："
                              f"{e['ci']:.0f}（{d['ci_reason']}）")
+                lines.append(f"  官網 {official_site('China Airlines')}")
             lines.append("")
 
         other_deals = [d for d in deals if d["overall_reason"]]
@@ -333,6 +339,9 @@ def main():
                 b = d["best"]
                 lines.append(f"{d['origin']}→{d['destination']} {b['date']}："
                              f"{b['price']:.0f} {b['airline']}（{d['overall_reason']}）")
+                site = official_site(b["airline"])
+                if site:
+                    lines.append(f"  官網 {site}")
             lines.append("")
 
         if combos:
